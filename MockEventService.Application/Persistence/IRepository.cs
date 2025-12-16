@@ -2,11 +2,11 @@
 
 namespace MockEventService.Application.Persistence;
 
-public interface IRepository<TEntity> 
+public interface IRepository<TEntity>
 {
-    public Task Add<T>(T entity);
-    public Task<T> Get<T>(Expression<Func<T, bool>> expression);
-    public Task<IEnumerable<T>> GetByFilter<T>(Expression<Func<T, bool>> expression);
-    public Task Update<T>(T entity);
-    public Task Delete<T>(T entity);
+    public Task Add(TEntity entity);
+    public Task<TEntity> Get(Expression<Func<TEntity, bool>> expression);
+    public Task<IEnumerable<TEntity>> GetByFilter(Expression<Func<TEntity, bool>> expression);
+    public Task Update(TEntity entity);
+    public Task Delete(TEntity entity);
 }
