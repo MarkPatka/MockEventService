@@ -1,6 +1,8 @@
-﻿namespace MockEventService.Application.Persistence;
+﻿using MockEventService.Domain;
 
-public interface IEventRepository<T> : IRepository<T> 
+namespace MockEventService.Application.Persistence;
+
+public interface IEventRepository : IRepository<Event> 
 {
 
 }

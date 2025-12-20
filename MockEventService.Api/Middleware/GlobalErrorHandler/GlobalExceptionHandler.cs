@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using MockEventService.Application.Common.Errors;
 
 namespace MockEventService.Api.Middleware.GlobalErrorHandler;
 
@@ -13,13 +14,35 @@ internal sealed class GlobalExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError(exception, "Unhandled exception occurred");
+        var errorFeature = httpContext.Features
+            .Get<IExceptionHandlerFeature>();
 
-        httpContext.Response.StatusCode = exception switch
+        var originalError = errorFeature?.Error;
+
+        if (originalError is null)
         {
-            ApplicationException => StatusCodes.Status400BadRequest,
-            
-            _ => StatusCodes.Status500InternalServerError
+            return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+            {
+                HttpContext = httpContext,
+                ProblemDetails = new ProblemDetails
+                {
+                    Title = "An unknown error occurred",
+                    Status = StatusCodes.Status500InternalServerError
+                }
+            });
+        }
+
+        logger.LogError(
+            exception,
+            $"Unhandled exception occurred. " +
+            $"Path: {httpContext.Request.Path}, " +
+            $"Method: {httpContext.Request.Method}, " +
+            $"User: {httpContext.User?.Identity?.Name ?? "Anonymous"}");
+
+        var (statusCode, message) = exception switch
+        {
+            IServiceError serviceException => ((int)serviceException.StatusCode, serviceException.ErrorMessage),
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
         };
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
@@ -28,9 +51,10 @@ internal sealed class GlobalExceptionHandler(
             Exception = exception,
             ProblemDetails = new ProblemDetails
             {
-                Type = exception.GetType().Name,
-                Title = "An error occured",
-                Detail = exception.Message,
+                Type = originalError.GetType().Name,
+                Title = "An error occurred",
+                Detail = message,
+                Status = statusCode
             }
         });
     }

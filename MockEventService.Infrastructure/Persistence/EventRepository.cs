@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace MockEventService.Infrastructure.Persistence;
 
-public class EventRepository : IEventRepository<Event>
+public class EventRepository : IEventRepository
 {
     private readonly ITimeProviderService _timeProviderService;
 

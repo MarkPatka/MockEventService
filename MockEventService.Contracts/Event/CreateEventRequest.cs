@@ -2,4 +2,4 @@
 
 public sealed record CreateEventRequest(
     string Title,
-    string Description);
+    string? Description);
