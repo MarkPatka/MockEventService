@@ -2,11 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MockEventService.Application.EventManagement.Command.CreateEventCommand;
-using MockEventService.Application.EventManagement.Common;
-using MockEventService.Application.Persistence;
-using MockEventService.Contracts.Event;
-using MockEventService.Domain;
-using System;
+using MockEventService.Application.EventManagement.Queries.GetAllUserEventsQuery;
+using MockEventService.Contracts.Events;
 
 namespace MockEventService.Api.Controllers;
 
@@ -33,11 +30,27 @@ public class EventsController : ControllerBase
         // send command to request handler
         var result = await _sender.Send(command);
 
-
-        // get the handler response 
+        // map the result model to response model 
         var response = _mapper.Map<CreateEventResponse>(result);
+        
+        // get the handler response 
+        return Ok(response);
+    }
 
-        // map the result model to responce model 
+
+    [HttpGet("get")]
+    public async Task<IActionResult> GetAllUserEvents(GetAllUserEventsRequest request)
+    {
+        // request -> map to command
+        var query = _mapper.Map<GetAllUserEventsQuery>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(query);
+
+        // map the result model to response model 
+        var response = _mapper.Map<GetAllUserEventsResponse>(result);
+        
+        // get the handler response 
         return Ok(response);
     }
 }
