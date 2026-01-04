@@ -19,19 +19,46 @@ public class CreateEventCommandHandler
         _timeProvider = timeProvider;
     }
 
-
-    public Task<CreateEventResult> Handle(
-        CreateEventCommand request, 
+    public async Task<CreateEventResult> Handle(
+        CreateEventCommand request,
         CancellationToken cancellationToken)
     {
         // check if not exists
+        var existingEventFromDb = await _repository.GetByFilter(x =>
+                x.Title == request.Title &&
+                x.EventType == request.EventType &&
+                x.StartDate == request.StartDate &&
+                x.OrganizerId == request.OrganizerId);
+
+        if (existingEventFromDb != null)
+        {
+            throw new Exception($"Event already exists");
+        }
 
         // create
+        var newEvent = Event.Create(
+            request.Title,
+            request.Description!,
+            request.EventType,
+            request.Location!,
+            request.StartDate,
+            request.EndDate,
+            request.MaxParticipants,
+            request.OrganizerId,
+            _timeProvider.UtcNow,
+            _timeProvider.UtcNow
+        );
 
         // add
+        await _repository.Add(newEvent);
 
         // return result
+        var result = new CreateEventResult(
+                    newEvent.Id.Value,
+                    newEvent.CreatedAt,
+                    newEvent.UpdatedAt,
+                    newEvent.Status);
 
-        return Task.FromResult(new CreateEventResult(Guid.NewGuid(), _timeProvider.UtcNow));
+        return await Task.FromResult(result);
     }
 }

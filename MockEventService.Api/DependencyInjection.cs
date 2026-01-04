@@ -10,6 +10,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddErrorHandler();
+        services.AddMappings();
         return services;
     }
 
