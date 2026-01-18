@@ -6,13 +6,10 @@ using MockEventService.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services
-        .AddPresentation()
-        .AddApplication()
         .AddInfrastructure()
+        .AddApplication()
+        .AddPresentation()
         ;
-
-    // IOptions<T>, Configuration classes 
-    // ErrorOr<Result>
 }
 
 
@@ -23,6 +20,5 @@ var app = builder.Build();
     app.MapControllers();
     app.Run();
 }
-
 
 

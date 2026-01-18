@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddErrorHandler();
         services.AddMappings();
+        services.AddControllers();
         return services;
     }
 

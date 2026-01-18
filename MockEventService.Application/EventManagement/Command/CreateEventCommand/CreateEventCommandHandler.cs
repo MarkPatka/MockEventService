@@ -12,7 +12,6 @@ public class CreateEventCommandHandler
     private readonly IEventRepository _repository;
     private readonly ITimeProviderService _timeProvider;
 
-
     public CreateEventCommandHandler(IEventRepository repository, ITimeProviderService timeProvider)
     {
         _repository = repository;
