@@ -1,6 +1,11 @@
 -- ============================================================================
 -- Database Creation Script for MockEventService
 -- ============================================================================
+
+-- ============================================================================
+-- Schema Creation
+-- ============================================================================
+
 CREATE SCHEMA IF NOT EXISTS events;
 
 -- Set search path
@@ -19,10 +24,10 @@ CREATE TABLE IF NOT EXISTS events.event_statuses (
 );
 
 INSERT INTO events.event_statuses (id, name, display_name) VALUES
-(1, 'Draft', 'Черновик'),
-(2, 'Published', 'Опубликовано'),
-(3, 'Cancelled', 'Отменено'),
-(4, 'Completed', 'Завершено')
+(1, 'Draft', 'Р§РµСЂРЅРѕРІРёРє'),
+(2, 'Published', 'РћРїСѓР±Р»РёРєРѕРІР°РЅРѕ'),
+(3, 'Cancelled', 'РћС‚РјРµРЅРµРЅРѕ'),
+(4, 'Completed', 'Р—Р°РІРµСЂС€РµРЅРѕ')
 ON CONFLICT (id) DO NOTHING;
 
 -- ParticipantStatus enumeration
@@ -34,11 +39,10 @@ CREATE TABLE IF NOT EXISTS events.participant_statuses (
 );
 
 INSERT INTO events.participant_statuses (id, name, display_name) VALUES
-(1, 'Registered', 'Зарегистрирован'),
-(2, 'Attended', 'Присутствовал'),
-(3, 'Cancelled', 'Отменил участие')
+(1, 'Registered', 'Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ'),
+(2, 'Attended', 'РџСЂРёСЃСѓС‚СЃС‚РІРѕРІР°Р»'),
+(3, 'Cancelled', 'РћС‚РјРµРЅРёР» СѓС‡Р°СЃС‚РёРµ')
 ON CONFLICT (id) DO NOTHING;
-
 
 -- ============================================================================
 -- Entity Tables
@@ -208,3 +212,33 @@ GRANT USAGE ON SCHEMA events TO postgres;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA events TO postgres;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA events TO postgres;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA events TO postgres;
+
+-- ============================================================================
+-- Database Statistics and Verification
+-- ============================================================================
+
+-- View table structure summary
+DO $$
+DECLARE
+    v_table_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO v_table_count 
+    FROM information_schema.tables 
+    WHERE table_schema = 'events' AND table_type = 'BASE TABLE';
+    
+    RAISE NOTICE '============================================================================';
+    RAISE NOTICE 'Database initialization completed successfully!';
+    RAISE NOTICE '============================================================================';
+    RAISE NOTICE 'Schema: events';
+    RAISE NOTICE 'Tables created: %', v_table_count;
+    RAISE NOTICE '----------------------------------------------------------------------------';
+    RAISE NOTICE 'Tables:';
+    RAISE NOTICE '  - event_statuses (enumeration)';
+    RAISE NOTICE '  - participant_statuses (enumeration)';
+    RAISE NOTICE '  - event_types (entity)';
+    RAISE NOTICE '  - organizers (entity)';
+    RAISE NOTICE '  - events (aggregate root)';
+    RAISE NOTICE '  - participants (entity - part of events aggregate)';
+    RAISE NOTICE '  - reviews (entity - part of events aggregate)';
+    RAISE NOTICE '============================================================================';
+END $$;
