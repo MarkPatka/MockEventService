@@ -19,8 +19,6 @@ public class EventsController : ControllerBase
         _mapper = mapper;
     }
 
-
-
     [HttpPost("create")]
     public async Task<IActionResult> CreateEvent(CreateEventRequest request)
     {

@@ -3,6 +3,7 @@ using MockEventService.Application.Persistence;
 using MockEventService.Application.Services;
 using MockEventService.Infrastructure.Persistence;
 using MockEventService.Infrastructure.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace MockEventService.Infrastructure;
 
@@ -20,7 +21,13 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<ITimeProviderService, TimeProviderService>();
+        services
+            .AddSingleton<ITimeProviderService, TimeProviderService>();
+        
+        services
+            .AddTransient<IMockConfigurationService, MockConfigurationService>();
+
+
         return services;
     }
 
