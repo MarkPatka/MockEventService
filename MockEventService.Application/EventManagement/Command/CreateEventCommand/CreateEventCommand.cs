@@ -14,5 +14,4 @@ public record CreateEventCommand(
     OrganizerId OrganizerId,
     string? Description = null,
     Location? Location = null
-    )
-    : IRequest<CreateEventResult>;
+    ) : IRequest<CreateEventResult>;
