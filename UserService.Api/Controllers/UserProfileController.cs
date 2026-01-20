@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
+using UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
+using UserService.Application.UserProfileManagement.Common;
 using UserService.Application.UserProfileManagement.Queries.GetUserProfileQuery;
 using UserService.Contracts.UserProfiles;
 
@@ -20,7 +22,7 @@ public class UserProfileController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public async Task<IActionResult> Get(GetUserProfileRequest request)
+    public async Task<IActionResult> GetUserProfile(GetUserProfileRequest request)
     {
         // request -> map to command
         var query = _mapper.Map<GetUserProfileQuery>(request);
@@ -34,18 +36,34 @@ public class UserProfileController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-    
+
     [HttpPut("{userId}")]
-    public async Task<IActionResult> Get(UpdateUserProfileRequest request)
+    public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileRequest request)
     {
         // request -> map to command
-        var query = _mapper.Map<UpdateUserProfileCommand>(request);
+        var command = _mapper.Map<UpdateUserProfileCommand>(request);
 
         // send command to request handler
-        var result = await _sender.Send(query);
+        var result = await _sender.Send(command);
 
         // map the result model to response model 
-        var response = _mapper.Map<GetUserProfileResponse>(result);
+        var response = _mapper.Map<UpdateUserProfileResult>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+
+    [HttpPut("interests/{userId}")]
+    public async Task<IActionResult> UpdateUserProfileInterests(UpdateUserProfileInterestsRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<UpdateUserProfileInterestsCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<UpdateUserProfileInterestsResult>(result);
 
         // get the handler response 
         return Ok(response);

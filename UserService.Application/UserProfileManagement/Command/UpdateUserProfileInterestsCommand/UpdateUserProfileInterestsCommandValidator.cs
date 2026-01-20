@@ -1,0 +1,14 @@
+﻿using FluentValidation;
+
+namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
+
+public class
+    UpdateUserProfileInterestsCommandValidator : AbstractValidator<
+    UpdateUserProfileInterestsCommand>
+{
+    public UpdateUserProfileInterestsCommandValidator()
+    {
+        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Interests).IsInEnum();
+    }
+}
