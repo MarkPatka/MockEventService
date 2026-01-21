@@ -22,7 +22,7 @@ public abstract class Entity<Tid> : IEquatable<Entity<Tid>>
     {
         return Equals((object?)other);
     }
-    public static bool operator ==(Entity<Tid> left, Entity<Tid> right)
+    public static bool operator ==(Entity<Tid>? left, Entity<Tid>? right)
     {
         return Equals(left, right);
     }

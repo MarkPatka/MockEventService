@@ -6,7 +6,8 @@ namespace UserService.Api.Middleware.GlobalErrorHandler;
 
 internal sealed class GlobalExceptionHandler(
     IProblemDetailsService problemDetailsService,
-    ILogger<GlobalExceptionHandler> logger) 
+    ILogger<GlobalExceptionHandler> logger,
+    IWebHostEnvironment environment)
     : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -34,15 +35,19 @@ internal sealed class GlobalExceptionHandler(
 
         logger.LogError(
             exception,
-            $"Unhandled exception occurred. " +
+            "Unhandled exception occurred. " +
             $"Path: {httpContext.Request.Path}, " +
             $"Method: {httpContext.Request.Method}, " +
             $"User: {httpContext.User?.Identity?.Name ?? "Anonymous"}");
 
-        var (statusCode, message) = exception switch
+        var (statusCode, message, stackTrace) = exception switch
         {
-            IServiceError serviceException => ((int)serviceException.StatusCode, serviceException.ErrorMessage),
-            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
+            IServiceError serviceException => ((int)serviceException.StatusCode, serviceException.ErrorMessage,
+                serviceException.StackTrace),
+            _ => (
+                StatusCodes.Status500InternalServerError,
+                environment.IsDevelopment() ? exception.Message : "en error occured",
+                environment.IsDevelopment() ? exception.StackTrace : string.Empty)
         };
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
@@ -52,9 +57,9 @@ internal sealed class GlobalExceptionHandler(
             ProblemDetails = new ProblemDetails
             {
                 Type = originalError.GetType().Name,
-                Title = "An error occurred",
-                Detail = message,
-                Status = statusCode
+                Title = message,
+                Detail = stackTrace,
+                Status = statusCode,
             }
         });
     }

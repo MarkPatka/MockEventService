@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UserService.Application.Persistence;
 using UserService.Application.Services;
+using UserService.Domain.UserProfileAggregate;
+using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Services;
 
 namespace UserService.Infrastructure;
@@ -9,6 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddServices();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         return services;
     }
 

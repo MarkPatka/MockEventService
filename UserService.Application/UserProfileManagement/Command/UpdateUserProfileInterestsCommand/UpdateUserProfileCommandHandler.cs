@@ -9,9 +9,9 @@ public class
     UpdateUserProfileInterestsCommandHandler : IRequestHandler<UpdateUserProfileInterestsCommand,
     UpdateUserProfileInterestsResult>
 {
-    private readonly IRepository<UserProfile> _userProfileRepository;
+    private readonly IUserProfileRepository _userProfileRepository;
 
-    public UpdateUserProfileInterestsCommandHandler(IRepository<UserProfile> userProfileRepository)
+    public UpdateUserProfileInterestsCommandHandler(IUserProfileRepository userProfileRepository)
     {
         _userProfileRepository = userProfileRepository;
     }

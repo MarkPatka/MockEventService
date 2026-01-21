@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
 using UserService.Application.UserProfileManagement.Common;
+using UserService.Application.UserProfileManagement.Queries.GetUserProfileInterestsQuery;
 using UserService.Application.UserProfileManagement.Queries.GetUserProfileQuery;
 using UserService.Contracts.UserProfiles;
 
 namespace UserService.Api.Controllers;
 
+[Route("profiles")]
 public class UserProfileController : ControllerBase
 {
     private readonly ISender _sender;
@@ -21,7 +23,7 @@ public class UserProfileController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet]
     public async Task<IActionResult> GetUserProfile(GetUserProfileRequest request)
     {
         // request -> map to command
@@ -37,7 +39,7 @@ public class UserProfileController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{userId}")]
+    [HttpPut]
     public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileRequest request)
     {
         // request -> map to command
@@ -52,8 +54,24 @@ public class UserProfileController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
+    
+    [HttpGet("interests")]
+    public async Task<IActionResult> GetUserProfileInterests(GetUserProfileInterestsRequest request)
+    {
+        // request -> map to command
+        var query = _mapper.Map<GetUserProfileInterestsQuery>(request);
 
-    [HttpPut("interests/{userId}")]
+        // send command to request handler
+        var result = await _sender.Send(query);
+
+        // map the result model to response model 
+        var response = _mapper.Map<GetUserProfileInterestsResult>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+    
+    [HttpPut("interests")]
     public async Task<IActionResult> UpdateUserProfileInterests(UpdateUserProfileInterestsRequest request)
     {
         // request -> map to command

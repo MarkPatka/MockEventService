@@ -7,9 +7,9 @@ namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfil
 
 public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, UpdateUserProfileResult>
 {
-    private readonly IRepository<UserProfile> _userProfileRepository;
+    private readonly IUserProfileRepository _userProfileRepository;
 
-    public UpdateUserProfileCommandHandler(IRepository<UserProfile> userProfileRepository)
+    public UpdateUserProfileCommandHandler(IUserProfileRepository userProfileRepository)
     {
         _userProfileRepository = userProfileRepository;
     }
