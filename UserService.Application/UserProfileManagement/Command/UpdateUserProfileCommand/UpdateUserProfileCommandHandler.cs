@@ -21,7 +21,7 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
             await _userProfileRepository.GetByFilterAsync(x => x.Id == request.Id).ConfigureAwait(false);
 
         var userProfile = userProfiles.ToList().FirstOrDefault();
-        if (userProfile != null)
+        if (userProfile == null)
         {
             throw new Exception("UserProfile doesn't exist");
         }

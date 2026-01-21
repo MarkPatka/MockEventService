@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Common.Errors;
+using UserService.Application.Common.Exceptions;
 
 namespace UserService.Api.Middleware.GlobalErrorHandler;
 
@@ -44,9 +45,13 @@ internal sealed class GlobalExceptionHandler(
         {
             IServiceError serviceException => ((int)serviceException.StatusCode, serviceException.ErrorMessage,
                 serviceException.StackTrace),
-            _ => (
-                StatusCodes.Status500InternalServerError,
-                environment.IsDevelopment() ? exception.Message : "en error occured",
+            
+            EntityNotFoundException => (StatusCodes.Status404NotFound,
+                exception.Message,
+                environment.IsDevelopment() ? exception.StackTrace : string.Empty),
+            
+            _ => (StatusCodes.Status500InternalServerError,
+                environment.IsDevelopment() ? exception.Message : "an error occured",
                 environment.IsDevelopment() ? exception.StackTrace : string.Empty)
         };
 

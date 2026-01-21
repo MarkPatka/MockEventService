@@ -23,7 +23,11 @@ public class UserProfileRepository : IUserProfileRepository
 
     public Task<IEnumerable<UserProfile>> GetByFilterAsync(Expression<Func<UserProfile, bool>> expression)
     {
-        return Task.FromResult(new List<UserProfile>().AsEnumerable());
+        return Task.FromResult(new List<UserProfile>()
+        {
+            UserProfile.Create("1", "1", null, new List<string>(), null,
+                DateTime.Now, null)
+        }.AsEnumerable());
     }
 
     public Task<UserProfile> UpdateAsync(UserProfile entity)

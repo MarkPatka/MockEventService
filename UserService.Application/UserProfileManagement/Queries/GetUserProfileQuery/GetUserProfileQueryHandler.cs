@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
 using UserService.Application.UserProfileManagement.Common;
 using UserService.Domain.UserProfileAggregate;
@@ -22,9 +23,9 @@ public class GetUserProfileQueryHandler
             .ConfigureAwait(false);
 
         var userProfile = userProfiles.ToList().FirstOrDefault();
-        if (userProfile != null)
+        if (userProfile == null)
         {
-            throw new Exception("UserProfile doesn't exist");
+            throw new EntityNotFoundException("UserProfile doesn't exist");
         }
 
         return await Task.FromResult(
