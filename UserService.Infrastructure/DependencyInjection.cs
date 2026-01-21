@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Persistence;
-using UserService.Application.Services;
-using UserService.Domain.UserProfileAggregate;
 using UserService.Infrastructure.Persistence;
-using UserService.Infrastructure.Services;
 
 namespace UserService.Infrastructure;
 
@@ -13,13 +10,13 @@ public static class DependencyInjection
     {
         services.AddServices();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        services.AddScoped<IClubRepository, ClubRepository>();
         return services;
     }
 
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<ITimeProviderService, TimeProviderService>();
         return services;
     }
 }

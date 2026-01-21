@@ -10,6 +10,7 @@ public sealed class OwnerId : ValueObject
 
     public static OwnerId Create(Guid value) => new(value);
     public static OwnerId CreateUnique() => new(Guid.NewGuid());
+    public override string ToString() => $"{Value}";
 
     public override IEnumerable<object> GetEqualityComponents()
     {
