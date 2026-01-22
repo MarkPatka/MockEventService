@@ -50,4 +50,19 @@ public sealed class Club : AggregateRoot<ClubId>
             name, description, owner, isPublic, createdAt, updatedAt
         );
     }
+
+    public static Club Create(
+        ClubId id,
+        string name,
+        string description,
+        OwnerId owner,
+        bool isPublic,
+        DateTime createdAt,
+        DateTime? updatedAt)
+
+    {
+        return new Club(
+            id, name, description, owner, isPublic, createdAt, updatedAt
+        );
+    }
 }

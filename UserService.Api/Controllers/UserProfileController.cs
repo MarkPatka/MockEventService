@@ -40,7 +40,7 @@ public class UserProfileController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileRequest request)
+    public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)
     {
         // request -> map to command
         var command = _mapper.Map<UpdateUserProfileCommand>(request);
@@ -72,7 +72,7 @@ public class UserProfileController : ControllerBase
     }
     
     [HttpPut("interests")]
-    public async Task<IActionResult> UpdateUserProfileInterests(UpdateUserProfileInterestsRequest request)
+    public async Task<IActionResult> UpdateUserProfileInterests([FromBody] UpdateUserProfileInterestsRequest request)
     {
         // request -> map to command
         var command = _mapper.Map<UpdateUserProfileInterestsCommand>(request);

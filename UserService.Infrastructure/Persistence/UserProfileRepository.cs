@@ -10,9 +10,10 @@ public class UserProfileRepository : IUserProfileRepository
     {
     }
 
-    public Task AddAsync(UserProfile entity)
+    public Task<UserProfile> AddAsync(UserProfile entity)
     {
-        return Task.CompletedTask;
+        return Task.FromResult(UserProfile.Create("1", "1", null, new List<string>(), null,
+            DateTime.Now, DateTime.Now));
     }
 
     public Task<UserProfile> GetAsync(Expression<Func<UserProfile, bool>> expression)

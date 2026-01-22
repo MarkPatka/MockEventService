@@ -12,9 +12,10 @@ public class ClubRepository : IClubRepository
     {
     }
 
-    public Task AddAsync(Club entity)
+    public Task<Club> AddAsync(Club entity)
     {
-        return Task.CompletedTask;
+        return Task.FromResult(Club.Create("1", "1", OwnerId.CreateUnique(), true,
+            DateTime.Now, DateTime.Now));
     }
 
     public Task<Club> GetAsync(Expression<Func<Club, bool>> expression)

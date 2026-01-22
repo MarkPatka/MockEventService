@@ -1,6 +1,8 @@
 ﻿using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Application.ClubManagement.Command.CreateClubCommand;
+using UserService.Application.ClubManagement.Command.UpdateClubCommand;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
 using UserService.Contracts.Clubs;
 
@@ -30,6 +32,38 @@ public class ClubController : ControllerBase
 
         // map the result model to response model 
         var response = _mapper.Map<GetClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> CreateClub([FromBody] CreateClubRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<CreateClubCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<CreateClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdaetClub([FromBody] UpdateClubRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<UpdateClubCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<UpdateClubResponse>(result);
 
         // get the handler response 
         return Ok(response);

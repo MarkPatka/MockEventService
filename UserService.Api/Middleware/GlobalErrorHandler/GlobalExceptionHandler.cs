@@ -48,7 +48,7 @@ internal sealed class GlobalExceptionHandler(
             
             EntityNotFoundException => (StatusCodes.Status404NotFound,
                 exception.Message,
-                environment.IsDevelopment() ? exception.StackTrace : string.Empty),
+                string.Empty),
             
             _ => (StatusCodes.Status500InternalServerError,
                 environment.IsDevelopment() ? exception.Message : "an error occured",
