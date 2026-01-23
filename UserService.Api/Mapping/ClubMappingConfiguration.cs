@@ -8,6 +8,7 @@ using UserService.Application.ClubManagement.Common;
 using UserService.Application.ClubManagement.Queries.GetClubMembersQuery;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
 using UserService.Application.ClubManagement.Queries.GetClubsByUserQuery;
+using UserService.Application.ClubManagement.Queries.SearchClubsQuery;
 using UserService.Contracts.Clubs;
 
 namespace UserService.Api.Mapping;
@@ -39,5 +40,8 @@ public class ClubMappingConfiguration : IRegister
         
         config.NewConfig<LeaveClubRequest, LeaveClubCommand>();
         config.NewConfig<LeaveClubResult, LeaveClubResponse>();
+        
+        config.NewConfig<SearchClubsRequest, SearchClubsQuery>();
+        config.NewConfig<SearchClubsResult, SearchClubsResponse>();
     }
 }

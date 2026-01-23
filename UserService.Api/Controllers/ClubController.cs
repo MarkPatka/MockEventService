@@ -8,6 +8,7 @@ using UserService.Application.ClubManagement.Command.LeaveClubCommand;
 using UserService.Application.ClubManagement.Command.UpdateClubCommand;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
 using UserService.Application.ClubManagement.Queries.GetClubsByUserQuery;
+using UserService.Application.ClubManagement.Queries.SearchClubsQuery;
 using UserService.Contracts.Clubs;
 
 namespace UserService.Api.Controllers;
@@ -132,6 +133,22 @@ public class ClubController : ControllerBase
 
         // map the result model to response model 
         var response = _mapper.Map<LeaveClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+    
+    [HttpPost("search")]
+    public async Task<IActionResult> SearchClubs([FromBody] SearchClubsRequest request)
+    {
+        // request -> map to query
+        var query = _mapper.Map<SearchClubsQuery>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(query);
+
+        // map the result model to response model 
+        var response = _mapper.Map<IEnumerable<SearchClubsResponse>>(result);
 
         // get the handler response 
         return Ok(response);

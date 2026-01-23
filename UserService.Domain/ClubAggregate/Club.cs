@@ -9,7 +9,7 @@ public sealed class Club : AggregateRoot<ClubId>
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public OwnerId Owner { get; private set; }
-    public IReadOnlyList<UserId> Members { get; private set; } = new List<UserId>();
+    public IEnumerable<string> Interests  { get; private set; } = new List<string>();
     public bool IsPublic { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
