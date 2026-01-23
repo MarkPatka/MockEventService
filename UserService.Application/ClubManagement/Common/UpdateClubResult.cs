@@ -2,4 +2,4 @@ using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Common;
 
-public record UpdateClubResult(ClubId id, string Name, string Description, OwnerId OwnerId, bool IsPublic);
+public record UpdateClubResult(Guid id, string Name, string Description, Guid OwnerId, bool IsPublic);

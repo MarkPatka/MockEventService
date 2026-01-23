@@ -19,7 +19,7 @@ public class GetUserProfileQueryInterestsHandler
         CancellationToken cancellationToken)
     {
         IEnumerable<UserProfile> userProfiles = await _repository
-            .GetByFilterAsync(x => x.Id.Value.ToString() == query.userId.ToString())
+            .GetByFilterAsync(x => x.Id.Value == query.userId)
             .ConfigureAwait(false);
 
         UserProfile? userProfile = userProfiles.FirstOrDefault();

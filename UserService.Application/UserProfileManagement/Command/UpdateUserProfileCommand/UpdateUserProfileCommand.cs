@@ -5,7 +5,7 @@ using UserService.Domain.UserProfileAggregate.ValueObjects;
 namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
 
 public record UpdateUserProfileCommand(
-    UserId Id,
+    Guid Id,
     string DisplayName,
     string Bio,
     Uri? AvatarUri,

@@ -3,6 +3,7 @@ using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
 using UserService.Domain.ClubAggregate;
+using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Command.CreateClubCommand;
 
@@ -29,10 +30,10 @@ public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Creat
         }
 
         club = Club.Create(
-            club.Name,
-            club.Description,
-            club.Owner,
-            club.IsPublic,
+            request.Name,
+            request.Description,
+            OwnerId.Create(request.OwnerId),
+            request.IsPublic,
             DateTime.Now,
             DateTime.Now);
         
@@ -40,10 +41,10 @@ public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Creat
         
         return await Task.FromResult(
             new CreateClubResult(
-                club.Id,
+                club.Id.Value,
                 club.Name,
                 club.Description,
-                club.Owner,
+                club.Owner.Value,
                 club.IsPublic)
         );
     }

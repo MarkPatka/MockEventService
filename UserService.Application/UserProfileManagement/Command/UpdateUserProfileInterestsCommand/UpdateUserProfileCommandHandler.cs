@@ -20,7 +20,7 @@ public class
         CancellationToken cancellationToken)
     {
         IEnumerable<UserProfile> userProfiles =
-            await _userProfileRepository.GetByFilterAsync(x => x.Id == request.Id).ConfigureAwait(false);
+            await _userProfileRepository.GetByFilterAsync(x => x.Id.Value == request.Id).ConfigureAwait(false);
 
         var userProfile = userProfiles.ToList().FirstOrDefault();
         if (userProfile == null)

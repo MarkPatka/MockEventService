@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.ClubManagement.Command.CreateClubCommand;
+using UserService.Application.ClubManagement.Command.DeleteClubCommand;
 using UserService.Application.ClubManagement.Command.UpdateClubCommand;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
 using UserService.Contracts.Clubs;
@@ -67,5 +68,18 @@ public class ClubController : ControllerBase
 
         // get the handler response 
         return Ok(response);
+    }
+    
+    [HttpDelete]
+    public async Task<IActionResult> DeleteClub([FromBody] DeleteClubRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<DeleteClubCommand>(request);
+
+        // send command to request handler
+        await _sender.Send(command);
+        
+        // get the handler response 
+        return Ok();
     }
 }

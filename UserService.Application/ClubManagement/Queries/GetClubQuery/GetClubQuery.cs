@@ -1,6 +1,7 @@
 using MediatR;
 using UserService.Application.ClubManagement.Common;
+using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Queries.GetClubQuery;
 
-public record GetClubQuery(string id) : IRequest<GetClubResult>;
+public record GetClubQuery(ClubId id) : IRequest<GetClubResult>;

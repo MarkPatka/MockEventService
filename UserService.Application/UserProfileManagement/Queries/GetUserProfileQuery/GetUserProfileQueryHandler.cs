@@ -19,7 +19,7 @@ public class GetUserProfileQueryHandler
     public async Task<GetUserProfileResult> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<UserProfile> userProfiles = await _repository
-            .GetByFilterAsync(x => x.Id.Value.ToString() == request.userId)
+            .GetByFilterAsync(x => x.Id.Value == request.userId)
             .ConfigureAwait(false);
 
         var userProfile = userProfiles.ToList().FirstOrDefault();

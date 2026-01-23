@@ -1,3 +1,3 @@
 namespace UserService.Application.ClubManagement.Common;
 
-public record GetClubResult(string? id, string Name, string Description, string? OwnerId, bool IsPublic);
+public record GetClubResult(Guid id, string Name, string Description, Guid OwnerId, bool IsPublic);

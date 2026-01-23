@@ -3,6 +3,7 @@ using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
 using UserService.Domain.ClubAggregate;
+using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Command.UpdateClubCommand;
 
@@ -32,7 +33,7 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
             club.Id,
             request.Name,
             request.Description,
-            request.OwnerId,
+            OwnerId.Create(request.OwnerId),
             request.IsPublic,
             DateTime.Now,
             DateTime.Now);
@@ -41,10 +42,10 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
 
         return await Task.FromResult(
             new UpdateClubResult(
-                club.Id,
+                club.Id.Value,
                 club.Name,
                 club.Description,
-                club.Owner,
+                club.Owner.Value,
                 club.IsPublic)
         );
     }

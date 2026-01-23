@@ -19,7 +19,7 @@ public class GetClubQueryHandler
     public async Task<GetClubResult> Handle(Queries.GetClubQuery.GetClubQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<Club> clubs = await _repository
-            .GetByFilterAsync(x => x.Id.Value.ToString() == request.id)
+            .GetByFilterAsync(x => x.Id.Value.ToString() == request.id.ToString())
             .ConfigureAwait(false);
 
         var club = clubs.ToList().FirstOrDefault();
@@ -30,10 +30,10 @@ public class GetClubQueryHandler
 
         return await Task.FromResult(
             new GetClubResult(
-                club.Id.ToString(),
+                club.Id.Value,
                 club.Name,
                 club.Description, 
-                club.Owner.ToString(), 
+                club.Owner.Value, 
                 club.IsPublic)
         );
     }

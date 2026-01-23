@@ -5,6 +5,6 @@ using UserService.Domain.UserProfileAggregate.ValueObjects;
 namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
 
 public record UpdateUserProfileInterestsCommand(
-    UserId Id,
+    Guid Id,
     IReadOnlyList<string> Interests)
     : IRequest<UpdateUserProfileInterestsResult>;

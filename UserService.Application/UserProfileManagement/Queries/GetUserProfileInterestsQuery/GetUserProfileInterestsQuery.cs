@@ -4,4 +4,4 @@ using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.UserProfileManagement.Queries.GetUserProfileInterestsQuery;
 
-public record GetUserProfileInterestsQuery(string userId) : IRequest<GetUserProfileInterestsResult>;
+public record GetUserProfileInterestsQuery(Guid userId) : IRequest<GetUserProfileInterestsResult>;
