@@ -3,8 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.ClubManagement.Command.CreateClubCommand;
 using UserService.Application.ClubManagement.Command.DeleteClubCommand;
+using UserService.Application.ClubManagement.Command.JoinClubCommand;
+using UserService.Application.ClubManagement.Command.LeaveClubCommand;
 using UserService.Application.ClubManagement.Command.UpdateClubCommand;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
+using UserService.Application.ClubManagement.Queries.GetClubsByUserQuery;
 using UserService.Contracts.Clubs;
 
 namespace UserService.Api.Controllers;
@@ -37,7 +40,7 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> CreateClub([FromBody] CreateClubRequest request)
     {
@@ -53,7 +56,7 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-    
+
     [HttpPut]
     public async Task<IActionResult> UpdateClub([FromBody] UpdateClubRequest request)
     {
@@ -69,17 +72,68 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-    
-    [HttpDelete]
-    public async Task<IActionResult> DeleteClub([FromBody] DeleteClubRequest request)
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetClubsByUser(GetClubsByUserRequest request)
     {
-        // request -> map to command
-        var command = _mapper.Map<DeleteClubCommand>(request);
+        // request -> map to query
+        var query = _mapper.Map<GetClubsByUserQuery>(request);
 
         // send command to request handler
-        await _sender.Send(command);
-        
+        var result = await _sender.Send(query);
+
+        // map the result model to response model 
+        var response = _mapper.Map<IEnumerable<GetClubsByUserResponse>>(result);
+
         // get the handler response 
-        return Ok();
+        return Ok(response);
+    }
+
+    [HttpGet("members")]
+    public async Task<IActionResult> GetClubsMembers(GetClubMembersRequest request)
+    {
+        // request -> map to query
+        var query = _mapper.Map<GetClubsByUserQuery>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(query);
+
+        // map the result model to response model 
+        var response = _mapper.Map<GetClubsByUserResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+
+    [HttpPost("join")]
+    public async Task<IActionResult> JoinToClub([FromBody] JoinToClubRequest request)
+    {
+        // request -> map to query
+        var command = _mapper.Map<JoinToClubCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<JoinToClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+
+    [HttpPost("leave")]
+    public async Task<IActionResult> LeaveClub([FromBody] LeaveClubRequest request)
+    {
+        // request -> map to query
+        var command = _mapper.Map<LeaveClubCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<LeaveClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
     }
 }

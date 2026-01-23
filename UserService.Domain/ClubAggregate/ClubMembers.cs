@@ -1,1 +1,0 @@
-namespace UserService.Domain.ClubAggregate;

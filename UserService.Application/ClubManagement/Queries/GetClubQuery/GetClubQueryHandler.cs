@@ -16,7 +16,7 @@ public class GetClubQueryHandler
         _repository = repository;
     }
 
-    public async Task<GetClubResult> Handle(Queries.GetClubQuery.GetClubQuery request, CancellationToken cancellationToken)
+    public async Task<GetClubResult> Handle(GetClubQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<Club> clubs = await _repository
             .GetByFilterAsync(x => x.Id.Value.ToString() == request.id.ToString())

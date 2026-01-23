@@ -11,6 +11,7 @@ public static class DependencyInjection
         services.AddServices();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IClubRepository, ClubRepository>();
+        services.AddScoped<IClubMembersRepository, ClubMembersRepository>();
         return services;
     }
 
