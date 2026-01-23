@@ -10,32 +10,24 @@ using UserService.Application.UserProfileManagement.Queries.GetUserProfileIntere
 using UserService.Application.UserProfileManagement.Queries.GetUserProfileQuery;
 using UserService.Contracts.Clubs;
 using UserService.Contracts.UserProfiles;
+using UserService.Domain.ClubAggregate.ValueObjects;
 
-namespace UserService.Api.Mapping;
+namespace UserService.Application.Mapping;
 
-public class UserProfileMappingConfiguration : IRegister
+public class ClubMappingConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<GetUserProfileRequest, GetUserProfileQuery>();
-        config.NewConfig<GetUserProfileResult, GetUserProfileResponse>();
-
-        config.NewConfig<UpdateUserProfileRequest, UpdateUserProfileCommand>();
-        config.NewConfig<UpdateUserProfileResult, UpdateUserProfileResponse>();
-
-        config.NewConfig<GetUserProfileInterestsRequest, GetUserProfileInterestsQuery>();
-        config.NewConfig<GetUserProfileInterestsResult, GetUserProfileInterestsResponse>();
-
-        config.NewConfig<UpdateUserProfileInterestsRequest, UpdateUserProfileInterestsCommand>();
-        config.NewConfig<UpdateUserProfileInterestsResult, UpdateUserProfileInterestsResponse>();
-
         config.NewConfig<GetClubRequest, GetClubQuery>();
         config.NewConfig<GetClubResult, GetClubResponse>();
 
-        config.NewConfig<CreateClubRequest, CreateClubCommand>();
+        config.NewConfig<CreateClubRequest, CreateClubCommand>()
+            .Map(dest => dest.OwnerId, src => OwnerId.Create(src.OwnerId));
+
         config.NewConfig<CreateClubResult, CreateClubResponse>();
 
-        config.NewConfig<UpdateClubRequest, UpdateClubCommand>();
+        config.NewConfig<UpdateClubRequest, UpdateClubCommand>()
+            .Map(dest => dest.OwnerId, src => OwnerId.Create(src.OwnerId));
         config.NewConfig<UpdateClubResult, UpdateClubResponse>();
     }
 }

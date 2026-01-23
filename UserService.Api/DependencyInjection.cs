@@ -1,7 +1,4 @@
-﻿using Mapster;
-using MapsterMapper;
-using System.Reflection;
-using UserService.Api.Middleware.GlobalErrorHandler;
+﻿using UserService.Api.Middleware.GlobalErrorHandler;
 
 namespace UserService.Api;
 
@@ -12,7 +9,6 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddErrorHandler();
-        services.AddMappings();
         return services;
     }
 
@@ -21,16 +17,6 @@ public static class DependencyInjection
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 
-        return services;
-    }
-
-    private static IServiceCollection AddMappings(this IServiceCollection services)
-    {
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(Assembly.GetExecutingAssembly());
-
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
         return services;
     }
 }

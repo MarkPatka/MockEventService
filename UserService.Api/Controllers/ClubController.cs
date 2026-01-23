@@ -54,7 +54,7 @@ public class ClubController : ControllerBase
     }
     
     [HttpPut]
-    public async Task<IActionResult> UpdaetClub([FromBody] UpdateClubRequest request)
+    public async Task<IActionResult> UpdateClub([FromBody] UpdateClubRequest request)
     {
         // request -> map to command
         var command = _mapper.Map<UpdateClubCommand>(request);
