@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MockEventService.Contracts\MockEventService.Contracts.csproj" />
     <ProjectReference Include="..\MockEventService.Domain\MockEventService.Domain.csproj" />
   </ItemGroup>
 
