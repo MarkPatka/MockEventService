@@ -1,6 +1,6 @@
-﻿using MockEventService.Domain;
+﻿using MockEventService.Contracts.Events;
 
 namespace MockEventService.Application.EventManagement.Common;
 
 public record GetAllUserEventsResult(
-    IEnumerable<Event> Events);
+    IEnumerable<EventDto> Events);

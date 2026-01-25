@@ -1,14 +1,19 @@
-﻿using MockEventService.Domain.EventAggregate.Entities;
-using MockEventService.Domain.EventAggregate.ValueObjects;
+﻿using MockEventService.Contracts.DTO;
 
 namespace MockEventService.Contracts.Events;
 
 public sealed record CreateEventRequest(
     string Title,
-    EventType EventType,
+    Guid eventTypeId, 
+    string eventTypeName,
+    string? eventTypeIcon,
+    string? eventTypeDescription, 
     DateTime StartDate,
     DateTime EndDate,
     int MaxParticipants,
-    OrganizerId OrganizerId,
+    Guid OrganizerId,
     string? Description,
-    Location? Location);
+    LocationFullDto location);
+
+
+
