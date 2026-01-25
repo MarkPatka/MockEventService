@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using MockEventService.Application.Common.Configuration;
 using MockEventService.Application.Persistence;
 using MockEventService.Application.Services;
+using MockEventService.Domain.EventAggregate;
+using MockEventService.Domain.EventAggregate.ValueObjects;
 using MockEventService.Infrastructure.Persistence;
 using MockEventService.Infrastructure.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace MockEventService.Infrastructure;
 
@@ -13,8 +17,10 @@ public static class DependencyInjection
     {
         services
             .AddServices()
+            .RegisterDbContext()
             .RegisterRepositories()
-            ;
+            ; 
+
         return services;
     }
 
@@ -35,7 +41,26 @@ public static class DependencyInjection
     {
 
         services
-            .AddScoped<IEventRepository, EventRepository>();
+            .AddScoped<IUnitOfWork, UnitOfWork>()
+            .AddScoped<IRepository<Event, EventId>, GenericRepository<Event, EventId>>()
+            ;
+
+
+        return services;
+    }
+
+    private static IServiceCollection RegisterDbContext(this IServiceCollection services)
+    {
+        // USUALLY WE DO SMTH LIKE THIS: .AddDbContext<MockEventServiceDbContext>()
+
+        services.AddDbContextFactory<MockEventServiceDbContext>((provider, options) =>
+        {
+            var dbSettings = provider
+                .GetRequiredService<IOptions<EventsDatabaseConnection>>().Value;
+
+            options.UseNpgsql(dbSettings.CONNECTION_STRING, cfg => cfg.EnableRetryOnFailure(2));
+
+        }, ServiceLifetime.Scoped);
 
         return services;
     }
