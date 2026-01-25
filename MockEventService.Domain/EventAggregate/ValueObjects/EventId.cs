@@ -2,9 +2,10 @@
 
 namespace MockEventService.Domain.EventAggregate.ValueObjects;
 
-public sealed class EventId : ValueObject
+public sealed class EventId : ValueObject, IEntityId
 {
     public Guid Value { get; }
+    object IEntityId.Value => Value;
 
     private EventId(Guid value) => Value = value;
 

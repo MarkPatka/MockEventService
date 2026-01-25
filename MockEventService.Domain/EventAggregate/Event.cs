@@ -1,10 +1,12 @@
-﻿using MockEventService.Domain.Common.Abstract;
+﻿using Microsoft.Extensions.Logging;
+using MockEventService.Domain.Common.Abstract;
+using MockEventService.Domain.EventAggregate.DomainEvents;
 using MockEventService.Domain.EventAggregate.Entities;
 using MockEventService.Domain.EventAggregate.Enumerations;
 using MockEventService.Domain.EventAggregate.ValueObjects;
 using EventId = MockEventService.Domain.EventAggregate.ValueObjects.EventId;
 
-namespace MockEventService.Domain;
+namespace MockEventService.Domain.EventAggregate;
 
 public sealed class Event : AggregateRoot<EventId>
 {
@@ -56,6 +58,7 @@ public sealed class Event : AggregateRoot<EventId>
         UpdatedAt = updatedAt;
     }
 
+    // ON EVENT CREATED
     public static Event Create(
         string title,
         string description,
@@ -68,7 +71,7 @@ public sealed class Event : AggregateRoot<EventId>
         DateTime createdAt,
         DateTime updatedAt)
     {
-        return new Event(
+        var @event = new Event(
             EventId.CreateUnique(),
             title,
             description,
@@ -80,5 +83,23 @@ public sealed class Event : AggregateRoot<EventId>
             organizerId,
             createdAt,
             updatedAt);
+
+        @event.AddDomainEvent(new EventCreated(@event.Id, DateTime.UtcNow)); 
+        return @event;
     }
+
+    // ON EVENT PUBLISHED
+    public void Publish() 
+    {
+        if (Status != EventStatus.Draft)
+            throw new InvalidOperationException("Only draft events can be published");
+
+        Status = EventStatus.Active;
+        UpdatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new EventPublished(Id, DateTime.UtcNow));
+    }
+
+    // ON EVENT CANCELLED
+
 }

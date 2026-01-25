@@ -1,6 +1,6 @@
 ﻿namespace MockEventService.Domain.Common.Abstract;
 
-public abstract class AggregateRoot<Tid> : Entity<Tid>
+public abstract class AggregateRoot<Tid> : Entity<Tid>, IEventSourceable
     where Tid : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = [];
@@ -9,6 +9,7 @@ public abstract class AggregateRoot<Tid> : Entity<Tid>
         _domainEvents.AsReadOnly();
 
     protected AggregateRoot() { }
+
     protected AggregateRoot(Tid id) : base(id) { }
 
     public void AddDomainEvent(IDomainEvent domainEvent) =>
