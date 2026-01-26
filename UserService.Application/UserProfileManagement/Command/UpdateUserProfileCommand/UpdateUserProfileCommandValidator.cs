@@ -7,6 +7,6 @@ public class UpdateUserProfileCommandValidator : AbstractValidator<UpdateUserPro
     public UpdateUserProfileCommandValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.DisplayName).IsInEnum();
+        RuleFor(x => x.DisplayName).NotEmpty();
     }
 }

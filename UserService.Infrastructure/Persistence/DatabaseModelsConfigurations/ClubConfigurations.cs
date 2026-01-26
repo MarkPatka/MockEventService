@@ -1,0 +1,34 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using UserService.Domain.ClubAggregate;
+using UserService.Domain.ClubAggregate.ValueObjects;
+
+namespace UserService.Infrastructure.Persistence.DatabaseModelsConfigurations;
+
+public class ClubConfigurations : IEntityTypeConfiguration<Club>
+{
+    public void Configure(EntityTypeBuilder<Club> builder)
+    {
+        ConfigureClubTable(builder);
+    }
+
+    private void ConfigureClubTable(EntityTypeBuilder<Club> builder)
+    {
+        builder.ToTable("Clubs");
+        builder.Property(x => x.Id).HasConversion(
+            id => id.Value,
+            value => ClubId.Create(value)).IsRequired();
+
+        builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.Description).HasMaxLength(2048);
+
+        builder.Property(x => x.Owner).HasConversion(
+            owner => owner.Value,
+            value => OwnerId.Create(value)).IsRequired();
+
+        builder.Property(e => e.Interests).HasColumnType("text[]");
+        builder.Property(e => e.IsPublic).HasColumnType("bool");
+        builder.Property(e => e.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
+        builder.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+    }
+}

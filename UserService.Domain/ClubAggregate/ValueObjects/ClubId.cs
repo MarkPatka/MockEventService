@@ -2,9 +2,11 @@
 
 namespace UserService.Domain.ClubAggregate.ValueObjects;
 
-public sealed class ClubId : ValueObject
+public sealed class ClubId : ValueObject, IEntityId
 {
     public Guid Value { get; }
+    
+    object IEntityId.Value => Value;
 
     private ClubId(Guid value) => Value = value;
 
