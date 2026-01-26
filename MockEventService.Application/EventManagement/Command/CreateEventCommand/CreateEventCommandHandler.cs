@@ -7,7 +7,7 @@ using MockEventService.Domain.EventAggregate;
 using MockEventService.Domain.EventAggregate.ValueObjects;
 
 namespace MockEventService.Application.EventManagement.Command.CreateEventCommand;
-
+//...
 public class CreateEventCommandHandler
     : IRequestHandler<CreateEventCommand, CreateEventResult>
 {

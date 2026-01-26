@@ -2,6 +2,7 @@
 
 namespace MockEventService.Application.EventManagement.Command.CreateEventCommand;
 
+// ...
 public class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
 {
     public CreateEventCommandValidator()

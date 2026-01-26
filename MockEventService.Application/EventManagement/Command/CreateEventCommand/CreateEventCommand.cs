@@ -5,6 +5,8 @@ using MockEventService.Domain.EventAggregate.ValueObjects;
 
 namespace MockEventService.Application.EventManagement.Command.CreateEventCommand;
 
+
+//...
 public record CreateEventCommand(
     string Title,
     EventType EventType,
