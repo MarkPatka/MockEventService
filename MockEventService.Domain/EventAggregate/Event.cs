@@ -101,5 +101,14 @@ public sealed class Event : AggregateRoot<EventId>
     }
 
     // ON EVENT CANCELLED
+    public void Cancell()
+    {
+        if (Status != EventStatus.Active)
+            throw new InvalidOperationException("Only active events can be cancelled");
 
+        Status = EventStatus.Cancelled;
+        UpdatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new EventCancelled(Id, DateTime.UtcNow));
+    }
 }
