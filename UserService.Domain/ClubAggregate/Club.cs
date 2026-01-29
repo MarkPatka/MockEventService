@@ -9,7 +9,11 @@ public sealed class Club : AggregateRoot<ClubId>
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public OwnerId Owner { get; private set; }
-    public IEnumerable<string> Interests  { get; private set; } = new List<string>();
+    public IEnumerable<string> Interests { get; private set; } = new List<string>();
+
+    private readonly List<ClubMember> _members = [];
+    public IReadOnlyCollection<ClubMember> ClubMembers => _members.AsReadOnly();
+
     public bool IsPublic { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
@@ -64,5 +68,11 @@ public sealed class Club : AggregateRoot<ClubId>
         return new Club(
             id, name, description, owner, isPublic, createdAt, updatedAt
         );
+    }
+
+    public void AddMember(UserId userId, DateTime joinedAt)
+    {
+        if (_members.FirstOrDefault(m => m.UserId == userId) == null)
+            _members.Add(ClubMember.Create(Id, userId, joinedAt));
     }
 }

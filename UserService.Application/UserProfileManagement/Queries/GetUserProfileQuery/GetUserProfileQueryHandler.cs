@@ -1,28 +1,28 @@
 ﻿using MediatR;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Application.UserProfileManagement.Common;
 using UserService.Domain.UserProfileAggregate;
+using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.UserProfileManagement.Queries.GetUserProfileQuery;
 
 public class GetUserProfileQueryHandler
     : IRequestHandler<GetUserProfileQuery, GetUserProfileResult>
 {
-    private readonly IUserProfileRepository _repository;
+    private readonly IUserProfileService _userProfileService;
 
-    public GetUserProfileQueryHandler(IUserProfileRepository repository)
+    public GetUserProfileQueryHandler(IUserProfileService userProfileService)
     {
-        _repository = repository;
+        _userProfileService = userProfileService;
     }
 
     public async Task<GetUserProfileResult> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<UserProfile> userProfiles = await _repository
-            .GetByFilterAsync(x => x.Id.Value == request.userId)
+        UserProfile? userProfile = await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.userId))
             .ConfigureAwait(false);
 
-        var userProfile = userProfiles.ToList().FirstOrDefault();
         if (userProfile == null)
         {
             throw new EntityNotFoundException("UserProfile doesn't exist");

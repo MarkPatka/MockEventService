@@ -2,6 +2,7 @@ using MediatR;
 using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 
@@ -9,17 +10,17 @@ namespace UserService.Application.ClubManagement.Command.DeleteClubCommand;
 
 public class DeleteClubCommandHandler : IRequestHandler<DeleteClubCommand, DeleteClubResult>
 {
-    private readonly IClubRepository _repository;
+    private readonly IClubService _clubService;
 
-    public DeleteClubCommandHandler(IClubRepository repository)
+    public DeleteClubCommandHandler(IClubService clubService)
     {
-        _repository = repository;
+        _clubService = clubService;
     }
 
     public async Task<DeleteClubResult> Handle(DeleteClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _repository
-            .GetByFilterAsync(x => x.Id.Value.ToString() == request.id.ToString())
+        IEnumerable<Club> clubs = await _clubService.GetClubByIdAsync(e)
+            .ListAsync(x => x.Id.Value.ToString() == request.id.ToString())
             .ConfigureAwait(false);
 
         var club = clubs.ToList().FirstOrDefault();

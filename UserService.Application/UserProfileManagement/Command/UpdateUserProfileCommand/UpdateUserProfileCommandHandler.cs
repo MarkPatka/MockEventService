@@ -1,26 +1,27 @@
 using MediatR;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Application.UserProfileManagement.Common;
 using UserService.Domain.UserProfileAggregate;
+using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
 
 public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, UpdateUserProfileResult>
 {
-    private readonly IUserProfileRepository _userProfileRepository;
+    private readonly IUserProfileService _userProfileService;
 
-    public UpdateUserProfileCommandHandler(IUserProfileRepository userProfileRepository)
+    public UpdateUserProfileCommandHandler(IUserProfileService userProfileService)
     {
-        _userProfileRepository = userProfileRepository;
+        _userProfileService = userProfileService;
     }
 
     public async Task<UpdateUserProfileResult> Handle(UpdateUserProfileCommand request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<UserProfile> userProfiles =
-            await _userProfileRepository.GetByFilterAsync(x => x.Id.Value == request.Id).ConfigureAwait(false);
+        UserProfile? userProfile = await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.Id))
+            .ConfigureAwait(false);
 
-        var userProfile = userProfiles.ToList().FirstOrDefault();
         if (userProfile == null)
         {
             throw new Exception("UserProfile doesn't exist");
@@ -37,7 +38,7 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
             DateTime.Now
         );
 
-        userProfile = await _userProfileRepository.UpdateAsync(userProfile).ConfigureAwait(false);
+        await _userProfileService.UpdateAsync(userProfile).ConfigureAwait(false);
 
         return new UpdateUserProfileResult(
             userProfile.DisplayName,

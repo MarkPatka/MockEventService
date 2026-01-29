@@ -2,27 +2,26 @@
 using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
+using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Queries.GetClubQuery;
 
 public class GetClubQueryHandler
     : IRequestHandler<GetClubQuery, GetClubResult>
 {
-    private readonly IClubRepository _repository;
+    private readonly IClubService _clubService;
 
-    public GetClubQueryHandler(IClubRepository repository)
+    public GetClubQueryHandler(IClubService clubService)
     {
-        _repository = repository;
+        _clubService = clubService;
     }
 
     public async Task<GetClubResult> Handle(GetClubQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _repository
-            .GetByFilterAsync(x => x.Id.Value.ToString() == request.id.ToString())
-            .ConfigureAwait(false);
+        Club? club = await _clubService.GetClubByIdAsync(request.id).ConfigureAwait(false);
 
-        var club = clubs.ToList().FirstOrDefault();
         if (club == null)
         {
             throw new EntityNotFoundException("Club doesn't exist");
@@ -32,8 +31,8 @@ public class GetClubQueryHandler
             new GetClubResult(
                 club.Id.Value,
                 club.Name,
-                club.Description, 
-                club.Owner.Value, 
+                club.Description,
+                club.Owner.Value,
                 club.IsPublic)
         );
     }

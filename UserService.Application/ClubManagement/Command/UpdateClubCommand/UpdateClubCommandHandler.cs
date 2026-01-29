@@ -9,9 +9,9 @@ namespace UserService.Application.ClubManagement.Command.UpdateClubCommand;
 
 public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, UpdateClubResult>
 {
-    private readonly IClubRepository _repository;
+    private readonly IRepository<Club, ClubId> _repository;
 
-    public UpdateClubCommandHandler(IClubRepository repository)
+    public UpdateClubCommandHandler(IRepository<Club, ClubId> repository)
     {
         _repository = repository;
     }

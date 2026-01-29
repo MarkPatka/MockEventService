@@ -1,7 +1,8 @@
 using MediatR;
-using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Application.UserProfileManagement.Common;
 using UserService.Domain.UserProfileAggregate;
+using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
 
@@ -9,20 +10,19 @@ public class
     UpdateUserProfileInterestsCommandHandler : IRequestHandler<UpdateUserProfileInterestsCommand,
     UpdateUserProfileInterestsResult>
 {
-    private readonly IUserProfileRepository _userProfileRepository;
+    private readonly IUserProfileService _userProfileService;
 
-    public UpdateUserProfileInterestsCommandHandler(IUserProfileRepository userProfileRepository)
+    public UpdateUserProfileInterestsCommandHandler(IUserProfileService userProfileService)
     {
-        _userProfileRepository = userProfileRepository;
+        _userProfileService = userProfileService;
     }
 
     public async Task<UpdateUserProfileInterestsResult> Handle(UpdateUserProfileInterestsCommand request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<UserProfile> userProfiles =
-            await _userProfileRepository.GetByFilterAsync(x => x.Id.Value == request.Id).ConfigureAwait(false);
+        UserProfile? userProfile =
+            await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.Id)).ConfigureAwait(false);
 
-        var userProfile = userProfiles.ToList().FirstOrDefault();
         if (userProfile == null)
         {
             throw new Exception("UserProfile doesn't exist");
@@ -39,7 +39,7 @@ public class
             DateTime.Now
         );
 
-        userProfile = await _userProfileRepository.UpdateAsync(userProfile).ConfigureAwait(false);
+        await _userProfileService.UpdateAsync(userProfile).ConfigureAwait(false);
 
         return new UpdateUserProfileInterestsResult(userProfile.Interests);
     }

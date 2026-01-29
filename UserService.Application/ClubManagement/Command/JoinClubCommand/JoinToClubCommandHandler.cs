@@ -10,9 +10,9 @@ namespace UserService.Application.ClubManagement.Command.JoinClubCommand;
 
 public class JoinToClubCommandHandler : IRequestHandler<JoinToClubCommand, JoinToClubResult>
 {
-    private readonly IClubMembersRepository _repository;
+    private readonly IRepository<Club, ClubId> _repository;
 
-    public JoinToClubCommandHandler(IClubMembersRepository repository)
+    public JoinToClubCommandHandler(IRepository<Club, ClubId> repository)
     {
         _repository = repository;
     }

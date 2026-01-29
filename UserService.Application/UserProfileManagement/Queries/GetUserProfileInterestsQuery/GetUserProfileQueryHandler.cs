@@ -1,28 +1,28 @@
 ﻿using MediatR;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Application.UserProfileManagement.Common;
 using UserService.Domain.UserProfileAggregate;
+using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.UserProfileManagement.Queries.GetUserProfileInterestsQuery;
 
 public class GetUserProfileQueryInterestsHandler
     : IRequestHandler<GetUserProfileInterestsQuery, GetUserProfileInterestsResult>
 {
-    private readonly IUserProfileRepository _repository;
+    private readonly IUserProfileService _userProfileService;
 
-    public GetUserProfileQueryInterestsHandler(IUserProfileRepository repository)
+    public GetUserProfileQueryInterestsHandler(IUserProfileService userProfileService)
     {
-        _repository = repository;
+        _userProfileService = userProfileService;
     }
 
     public async Task<GetUserProfileInterestsResult> Handle(GetUserProfileInterestsQuery query,
         CancellationToken cancellationToken)
     {
-        IEnumerable<UserProfile> userProfiles = await _repository
-            .GetByFilterAsync(x => x.Id.Value == query.userId)
+        UserProfile? userProfile = await _userProfileService.GetUserProfileByIdAsync(UserId.Create(query.userId))
             .ConfigureAwait(false);
 
-        UserProfile? userProfile = userProfiles.FirstOrDefault();
         if (userProfile == null)
         {
             throw new Exception("UserProfile doesn't exist");

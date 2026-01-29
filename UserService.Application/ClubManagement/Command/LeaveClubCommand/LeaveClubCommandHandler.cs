@@ -11,9 +11,9 @@ namespace UserService.Application.ClubManagement.Command.LeaveClubCommand;
 
 public class LeaveClubCommandHandler : IRequestHandler<LeaveClubCommand, LeaveClubResult>
 {
-    private readonly IClubMembersRepository _repository;
+    private readonly IRepository<Club, ClubId> _repository;
 
-    public LeaveClubCommandHandler(IClubMembersRepository repository)
+    public LeaveClubCommandHandler(IRepository<Club, ClubId> repository)
     {
         _repository = repository;
     }

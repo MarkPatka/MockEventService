@@ -2,6 +2,7 @@ using MediatR;
 using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 
@@ -9,18 +10,17 @@ namespace UserService.Application.ClubManagement.Command.CreateClubCommand;
 
 public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, CreateClubResult>
 {
-    private readonly IClubRepository _repository;
+    private readonly IClubService _clubService;
 
-    public CreateClubCommandHandler(IClubRepository repository)
+    public CreateClubCommandHandler(IClubService clubService)
     {
-        _repository = repository;
+        _clubService = clubService;
     }
 
     public async Task<CreateClubResult> Handle(CreateClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _repository
-            .GetByFilterAsync(x =>
-                x.Id.Value.ToString() == request.Name && x.Owner.Value.ToString() == request.OwnerId.ToString())
+        IEnumerable<Club> clubs = await _clubService
+            .SearchClubsAsync(request.Name, null, OwnerId.Create(request.OwnerId))
             .ConfigureAwait(false);
 
         var club = clubs.ToList().FirstOrDefault();
@@ -36,9 +36,9 @@ public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Creat
             request.IsPublic,
             DateTime.Now,
             DateTime.Now);
-        
-        await _repository.AddAsync(club).ConfigureAwait(true);
-        
+
+        club = await _clubService.AddAsync(club).ConfigureAwait(true);
+
         return await Task.FromResult(
             new CreateClubResult(
                 club.Id.Value,

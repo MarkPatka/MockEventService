@@ -22,6 +22,14 @@ public class ClubConfigurations : IEntityTypeConfiguration<Club>
         builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(2048);
 
+        builder.OwnsMany(c => c.ClubMembers, mb =>
+        {
+            mb.ToTable("ClubMembers");
+            mb.Property(x => x.JoinedAt).IsRequired();
+            mb.WithOwner().HasForeignKey("ClubId");
+            mb.HasKey("ClubId", "UserId");
+        });
+        
         builder.Property(x => x.Owner).HasConversion(
             owner => owner.Value,
             value => OwnerId.Create(value)).IsRequired();

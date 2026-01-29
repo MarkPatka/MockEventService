@@ -15,7 +15,7 @@ public class GenericRepository<TEntity, TId>
 {
     private readonly IDbContextFactory<UserServiceDbContext> _dbContextFactory = null!;
     protected readonly DbContext Context;
-    protected readonly DbSet<TEntity> DbSet;
+    protected readonly DbSet<TEntity> DbSet;    
 
     public GenericRepository(IDbContextFactory<UserServiceDbContext> dbContextFactory)
     {

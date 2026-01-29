@@ -9,19 +9,17 @@ namespace UserService.Application.ClubManagement.Queries.GetClubsByUserQuery;
 public class GetClubsQueryByUserHandler
     : IRequestHandler<GetClubsByUserQuery, IEnumerable<GetClubsByUserResult>>
 {
-    private readonly IClubMembersRepository _clubMembersRepository;
-    private readonly IClubRepository _clubRepository;
+    private readonly IRepository<Club, ClubId> _repository;
 
-    public GetClubsQueryByUserHandler(IClubRepository repository, IClubMembersRepository clubRepository)
+    public GetClubsQueryByUserHandler(IRepository<Club, ClubId> repository)
     {
-        _clubMembersRepository = clubRepository;
-        _clubRepository = repository;
+        _repository = repository;
     }
 
     public async Task<IEnumerable<GetClubsByUserResult>> Handle(GetClubsByUserQuery request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<ClubMember> clubMembers = await _clubMembersRepository
+        IEnumerable<ClubMember> clubMembers = await _repository
             .GetByFilterAsync(x => x.UserId == request.UserId)
             .ConfigureAwait(false);
 
