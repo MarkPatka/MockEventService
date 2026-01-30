@@ -364,4 +364,6 @@ FodyWeavers.xsd
 
 .idea
 
-bin/*
+/bin/Debug
+
+bin\\Debug
