@@ -2,6 +2,7 @@ using MediatR;
 using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 
@@ -9,19 +10,17 @@ namespace UserService.Application.ClubManagement.Command.UpdateClubCommand;
 
 public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, UpdateClubResult>
 {
-    private readonly IRepository<Club, ClubId> _repository;
+    private readonly IClubService _clubService;
 
-    public UpdateClubCommandHandler(IRepository<Club, ClubId> repository)
+    public UpdateClubCommandHandler(IClubService clubService)
     {
-        _repository = repository;
+        _clubService = clubService;
     }
 
     public async Task<UpdateClubResult> Handle(UpdateClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _repository
-            .GetByFilterAsync(x =>
-                x.Id.Value.ToString() == request.Name && x.Owner.Value.ToString() == request.OwnerId.ToString())
-            .ConfigureAwait(false);
+        IEnumerable<Club> clubs = await _clubService
+            .SearchClubsAsync(request.Name, null, OwnerId.Create(request.OwnerId)).ConfigureAwait(false);
 
         var club = clubs.ToList().FirstOrDefault();
         if (club == null)
@@ -38,7 +37,7 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
             DateTime.Now,
             DateTime.Now);
 
-        club = await _repository.UpdateAsync(club).ConfigureAwait(true);
+        await _clubService.UpdateAsync(club).ConfigureAwait(true);
 
         return await Task.FromResult(
             new UpdateClubResult(

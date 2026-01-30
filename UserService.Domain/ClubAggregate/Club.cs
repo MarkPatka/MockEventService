@@ -75,4 +75,11 @@ public sealed class Club : AggregateRoot<ClubId>
         if (_members.FirstOrDefault(m => m.UserId == userId) == null)
             _members.Add(ClubMember.Create(Id, userId, joinedAt));
     }
+    
+    public void DeleteMember(UserId userId, DateTime joinedAt)
+    {
+        if (_members.FirstOrDefault(m => m.UserId == userId) == null)
+            _members.Remove(ClubMember.Create(Id, userId, joinedAt));
+    }
+    
 }

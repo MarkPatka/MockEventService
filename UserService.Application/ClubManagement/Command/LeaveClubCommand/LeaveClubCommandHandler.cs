@@ -1,9 +1,7 @@
 using MediatR;
-using UserService.Application.ClubManagement.Command.JoinClubCommand;
 using UserService.Application.ClubManagement.Common;
 using UserService.Application.Common.Exceptions;
-using UserService.Application.Persistence;
-using UserService.Domain.ClubAggregate;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
 
@@ -11,25 +9,26 @@ namespace UserService.Application.ClubManagement.Command.LeaveClubCommand;
 
 public class LeaveClubCommandHandler : IRequestHandler<LeaveClubCommand, LeaveClubResult>
 {
-    private readonly IRepository<Club, ClubId> _repository;
+    private readonly IClubService _clubService;
 
-    public LeaveClubCommandHandler(IRepository<Club, ClubId> repository)
+    public LeaveClubCommandHandler(IClubService clubService)
     {
-        _repository = repository;
+        _clubService = clubService;
     }
 
     public async Task<LeaveClubResult> Handle(LeaveClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<ClubMember> clubs = await _repository
-            .GetByFilterAsync(x => x.ClubId.Value == request.ClubId && x.UserId.Value == request.UserId)
+        bool isMemberParticipated = await _clubService
+            .IsMemberParticipatedAsync(ClubId.Create(request.ClubId), UserId.Create(request.UserId))
             .ConfigureAwait(false);
 
-        var clubMembers = clubs.ToList();
-        if ((clubMembers?.Count ?? 0) > 0)
+        if (!isMemberParticipated)
         {
             throw new AlreadyDoneException("You have already left the club");
         }
-        await _repository.DeleteAsync(clubMembers.First()).ConfigureAwait(false);
+
+        await _clubService.DeleteMember(ClubId.Create(request.ClubId), UserId.Create(request.UserId))
+            .ConfigureAwait(false);
 
         return await Task.FromResult(new LeaveClubResult());
     }

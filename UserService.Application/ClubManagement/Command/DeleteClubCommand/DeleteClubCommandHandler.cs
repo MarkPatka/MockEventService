@@ -19,11 +19,8 @@ public class DeleteClubCommandHandler : IRequestHandler<DeleteClubCommand, Delet
 
     public async Task<DeleteClubResult> Handle(DeleteClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _clubService.GetClubByIdAsync(e)
-            .ListAsync(x => x.Id.Value.ToString() == request.id.ToString())
-            .ConfigureAwait(false);
+        Club? club = await _clubService.GetClubByIdAsync(ClubId.Create(request.id)).ConfigureAwait(false);
 
-        var club = clubs.ToList().FirstOrDefault();
         if (club == null)
         {
             throw new EntityNotFoundException("Club doesn't exist");
@@ -38,7 +35,7 @@ public class DeleteClubCommandHandler : IRequestHandler<DeleteClubCommand, Delet
             DateTime.Now,
             DateTime.Now);
 
-        await _repository.DeleteAsync(club).ConfigureAwait(true);
+        await _clubService.UpdateAsync(club).ConfigureAwait(true);
 
         return await Task.FromResult(new DeleteClubResult());
     }

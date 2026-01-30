@@ -1,7 +1,7 @@
 using UserService.Domain.UserProfileAggregate;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
 
-namespace UserService.Application.Persistence.Specifications;
+namespace UserService.Application.Persistence.Specifications.UserProfiles;
 
 public class UserByUserIdSpec : BaseSpecification<UserProfile>
 {

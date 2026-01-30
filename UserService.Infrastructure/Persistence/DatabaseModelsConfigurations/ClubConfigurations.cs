@@ -29,7 +29,7 @@ public class ClubConfigurations : IEntityTypeConfiguration<Club>
             mb.WithOwner().HasForeignKey("ClubId");
             mb.HasKey("ClubId", "UserId");
         });
-        
+
         builder.Property(x => x.Owner).HasConversion(
             owner => owner.Value,
             value => OwnerId.Create(value)).IsRequired();
