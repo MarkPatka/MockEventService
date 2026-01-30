@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
+using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Infrastructure.Persistence.DatabaseModelsConfigurations;
 
@@ -17,7 +18,9 @@ public class ClubConfigurations : IEntityTypeConfiguration<Club>
         builder.ToTable("Clubs");
         builder.Property(x => x.Id).HasConversion(
             id => id.Value,
-            value => ClubId.Create(value)).IsRequired();
+            value => ClubId.Create(value))
+            .ValueGeneratedNever()
+            .IsRequired();
 
         builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(2048);
@@ -26,6 +29,18 @@ public class ClubConfigurations : IEntityTypeConfiguration<Club>
         {
             mb.ToTable("ClubMembers");
             mb.Property(x => x.JoinedAt).IsRequired();
+            mb.Property<ClubId>("ClubId")
+                .HasConversion(
+                    id => id.Value,
+                    value => ClubId.Create(value))
+                .IsRequired();
+
+            mb.Property<UserId>("UserId")
+                .HasConversion(
+                    id => id.Value,
+                    value => UserId.Create(value))
+                .IsRequired();
+
             mb.WithOwner().HasForeignKey("ClubId");
             mb.HasKey("ClubId", "UserId");
         });

@@ -36,9 +36,7 @@ public static class DependencyInjection
     {
         services.AddDbContextFactory<UserServiceDbContext>((provider, options) =>
         {
-            //TODO
-            var connectionString = string.Empty;
-
+            var connectionString = "Host=localhost;Port=5432;Database=user_service;Username=postgres;Password=postgres";
             options.UseNpgsql(connectionString, cfg => cfg.EnableRetryOnFailure(2));
         }, ServiceLifetime.Scoped);
 
