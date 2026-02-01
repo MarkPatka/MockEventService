@@ -4,5 +4,5 @@ using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Command.UpdateClubCommand;
 
-public record UpdateClubCommand(ClubId id, string Name, string Description, Guid OwnerId, bool IsPublic)
+public record UpdateClubCommand(ClubId id, string Name, string Description, IEnumerable<string> Ineterests, Guid OwnerId, bool IsPublic)
     : IRequest<UpdateClubResult>;

@@ -1,5 +1,8 @@
-using UserService.Domain.ClubAggregate.ValueObjects;
-
 namespace UserService.Contracts.Clubs;
 
-public record CreateClubRequest(string Name, string Description, Guid OwnerId, bool IsPublic);
+public record CreateClubRequest(
+    string Name,
+    string Description,
+    IEnumerable<string> Interests,
+    Guid OwnerId,
+    bool IsPublic);

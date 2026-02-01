@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Persistence;
+using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.UserProfileAggregate;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
 using UserService.Infrastructure.Persistence;
+using UserService.Infrastructure.Services;
 
 namespace UserService.Infrastructure;
 
@@ -24,6 +26,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IRepository<Club, ClubId>, GenericRepository<Club, ClubId>>();
         services.AddScoped<IRepository<UserProfile, UserId>, GenericRepository<UserProfile, UserId>>();
+        services.AddScoped<IClubService, ClubService>();
+        services.AddScoped<IUserProfileService, UserProfileService>();
         return services;
     }
 

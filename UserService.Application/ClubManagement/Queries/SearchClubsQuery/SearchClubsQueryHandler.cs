@@ -20,6 +20,7 @@ public class SearchClubsQueryHandler
     public async Task<IEnumerable<SearchClubsResult>> Handle(SearchClubsQuery request,
         CancellationToken cancellationToken)
     {
+        await Task.CompletedTask;
         IEnumerable<Club> clubs =
             await _clubService.SearchClubsAsync(request.Name, request.Interests).ConfigureAwait(false);
 

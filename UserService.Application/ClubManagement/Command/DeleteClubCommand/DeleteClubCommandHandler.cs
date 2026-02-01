@@ -26,17 +26,7 @@ public class DeleteClubCommandHandler : IRequestHandler<DeleteClubCommand, Delet
             throw new EntityNotFoundException("Club doesn't exist");
         }
 
-        club = Club.Create(
-            ClubId.Create(request.id),
-            club.Name,
-            club.Description,
-            club.Owner,
-            club.IsPublic,
-            DateTime.Now,
-            DateTime.Now);
-
-        await _clubService.UpdateAsync(club).ConfigureAwait(true);
-
+        await _clubService.DeleteAsync(club).ConfigureAwait(true);
         return await Task.FromResult(new DeleteClubResult());
     }
 }

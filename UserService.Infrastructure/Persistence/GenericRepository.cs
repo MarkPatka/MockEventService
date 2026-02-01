@@ -116,6 +116,7 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         await DbSet.AddAsync(entity, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
@@ -124,15 +125,16 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         await DbSet.AddRangeAsync(entities, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
         return entities;
     }
 
-    public virtual Task UpdateAsync(
+    public async Task UpdateAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        Context.Entry(entity).State = EntityState.Modified;
-        return Task.CompletedTask;
+        DbSet.Update(entity);
+        await Context.SaveChangesAsync(cancellationToken);
     }
 
     public virtual Task UpdateRangeAsync(
@@ -143,20 +145,20 @@ public class GenericRepository<TEntity, TId>
         return Task.CompletedTask;
     }
 
-    public virtual Task DeleteAsync(
+    public async Task DeleteAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
         DbSet.Remove(entity);
-        return Task.CompletedTask;
+        await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual Task DeleteRangeAsync(
+    public async  Task DeleteRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
         DbSet.RemoveRange(entities);
-        return Task.CompletedTask;
+        await Context.SaveChangesAsync(cancellationToken);
     }
 
     protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)

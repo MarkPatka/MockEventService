@@ -9,7 +9,8 @@ public sealed class Club : AggregateRoot<ClubId>
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public OwnerId Owner { get; private set; }
-    public IEnumerable<string> Interests { get; private set; } = new List<string>();
+    private List<string> _interests = new();
+    public IReadOnlyCollection<string> Interests => _interests;
 
     private readonly List<ClubMember> _members = [];
     public IReadOnlyCollection<ClubMember> ClubMembers => _members.AsReadOnly();
@@ -26,6 +27,7 @@ public sealed class Club : AggregateRoot<ClubId>
         ClubId id,
         string name,
         string description,
+        IEnumerable<string> interests,
         OwnerId owner,
         bool isPublic,
         DateTime createdAt,
@@ -34,6 +36,7 @@ public sealed class Club : AggregateRoot<ClubId>
         Id = id;
         Name = name;
         Description = description;
+        _interests = interests.ToList();
         Owner = owner;
         IsPublic = isPublic;
         CreatedAt = createdAt;
@@ -43,6 +46,7 @@ public sealed class Club : AggregateRoot<ClubId>
     public static Club Create(
         string name,
         string description,
+        IEnumerable<string> interests,
         OwnerId owner,
         bool isPublic,
         DateTime createdAt,
@@ -51,7 +55,7 @@ public sealed class Club : AggregateRoot<ClubId>
     {
         return new Club(
             ClubId.CreateUnique(),
-            name, description, owner, isPublic, createdAt, updatedAt
+            name, description, interests, owner, isPublic, createdAt, updatedAt
         );
     }
 
@@ -59,6 +63,7 @@ public sealed class Club : AggregateRoot<ClubId>
         ClubId id,
         string name,
         string description,
+        IEnumerable<string> interests,
         OwnerId owner,
         bool isPublic,
         DateTime createdAt,
@@ -66,7 +71,7 @@ public sealed class Club : AggregateRoot<ClubId>
 
     {
         return new Club(
-            id, name, description, owner, isPublic, createdAt, updatedAt
+            id, name, description, interests, owner, isPublic, createdAt, updatedAt
         );
     }
 
@@ -75,11 +80,10 @@ public sealed class Club : AggregateRoot<ClubId>
         if (_members.FirstOrDefault(m => m.UserId == userId) == null)
             _members.Add(ClubMember.Create(Id, userId, joinedAt));
     }
-    
+
     public void DeleteMember(UserId userId, DateTime joinedAt)
     {
         if (_members.FirstOrDefault(m => m.UserId == userId) == null)
             _members.Remove(ClubMember.Create(Id, userId, joinedAt));
     }
-    
 }

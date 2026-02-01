@@ -22,7 +22,7 @@ public abstract class ValueObject : IEquatable<ValueObject>
         return left.Equals(right);
     }
 
-    public static bool operator !=(ValueObject left, ValueObject right)
+    public static bool operator !=(ValueObject? left, ValueObject right)
     {
         return !left.Equals(right);
     }

@@ -32,6 +32,7 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
             club.Id,
             request.Name,
             request.Description,
+            request.Ineterests,
             OwnerId.Create(request.OwnerId),
             request.IsPublic,
             DateTime.Now,
