@@ -19,13 +19,11 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
 
     public async Task<UpdateClubResult> Handle(UpdateClubCommand request, CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _clubService
-            .SearchClubsAsync(request.Name, null, OwnerId.Create(request.OwnerId)).ConfigureAwait(false);
-
-        var club = clubs.ToList().FirstOrDefault();
+        ClubId id = ClubId.Create(request.Id);
+        Club? club = await _clubService.GetClubByIdAsync(id).ConfigureAwait(false);
         if (club == null)
         {
-            throw new EntityNotFoundException("The doesn't exist");
+            throw new EntityNotFoundException("The club doesn't exist");
         }
 
         club = Club.Create(
@@ -45,6 +43,7 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
                 club.Id.Value,
                 club.Name,
                 club.Description,
+                club.Interests,
                 club.Owner.Value,
                 club.IsPublic)
         );

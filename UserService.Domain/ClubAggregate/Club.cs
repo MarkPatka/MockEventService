@@ -9,6 +9,7 @@ public sealed class Club : AggregateRoot<ClubId>
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public OwnerId Owner { get; private set; }
+
     private List<string> _interests = new();
     public IReadOnlyCollection<string> Interests => _interests;
 
@@ -36,7 +37,7 @@ public sealed class Club : AggregateRoot<ClubId>
         Id = id;
         Name = name;
         Description = description;
-        _interests = interests.ToList();
+        _interests = (interests != null) ? interests.ToList() : new List<string>();
         Owner = owner;
         IsPublic = isPublic;
         CreatedAt = createdAt;
