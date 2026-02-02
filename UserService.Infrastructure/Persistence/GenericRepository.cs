@@ -15,7 +15,7 @@ public class GenericRepository<TEntity, TId>
 {
     private readonly IDbContextFactory<UserServiceDbContext> _dbContextFactory = null!;
     protected readonly DbContext Context;
-    protected readonly DbSet<TEntity> DbSet;    
+    protected readonly DbSet<TEntity> DbSet;
 
     public GenericRepository(IDbContextFactory<UserServiceDbContext> dbContextFactory)
     {
@@ -23,13 +23,13 @@ public class GenericRepository<TEntity, TId>
         DbSet = Context.Set<TEntity>();
     }
 
-        public virtual async Task<TEntity?> GetByIdAsync(
-            TId id,
-            CancellationToken cancellationToken = default)
-        {
-            var keyValues = new object[] { id };
-            return await DbSet.FindAsync(keyValues, cancellationToken);
-        }
+    public virtual async Task<TEntity?> GetByIdAsync(
+        TId id,
+        CancellationToken cancellationToken = default)
+    {
+        var keyValues = new object[] { id };
+        return await DbSet.FindAsync(keyValues, cancellationToken);
+    }
 
     public virtual async Task<TEntity?> GetByIdAsync(
         TId id,
@@ -129,13 +129,13 @@ public class GenericRepository<TEntity, TId>
         return entities;
     }
 
-        public async Task UpdateAsync(
-            TEntity entity,
-            CancellationToken cancellationToken = default)
-        {
-            DbSet.Update(entity);
-            await Context.SaveChangesAsync(cancellationToken);
-        }
+    public async Task UpdateAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        DbSet.Update(entity);
+        await Context.SaveChangesAsync(cancellationToken);
+    }
 
     public virtual Task UpdateRangeAsync(
         IEnumerable<TEntity> entities,
@@ -153,7 +153,7 @@ public class GenericRepository<TEntity, TId>
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public async  Task DeleteRangeAsync(
+    public async Task DeleteRangeAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {

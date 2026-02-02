@@ -30,11 +30,11 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
             club.Id,
             request.Name,
             request.Description,
-            request.Ineterests,
+            request.Interests,
             OwnerId.Create(request.OwnerId),
             request.IsPublic,
-            DateTime.Now,
-            DateTime.Now);
+            club.CreatedAt,
+            DateTime.UtcNow);
 
         await _clubService.UpdateAsync(club).ConfigureAwait(true);
 

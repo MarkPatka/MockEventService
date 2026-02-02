@@ -8,7 +8,7 @@ public record UpdateClubCommand(
     Guid Id,
     string Name,
     string Description,
-    IEnumerable<string> Ineterests,
+    IEnumerable<string> Interests,
     Guid OwnerId,
     bool IsPublic)
     : IRequest<UpdateClubResult>;

@@ -23,7 +23,8 @@ public class ClubService : IClubService
 
     public async Task<Club?> GetClubByIdAsync(ClubId clubId)
     {
-        return await _repository.GetByIdAsync(clubId).ConfigureAwait(false);
+        var spec = new ClubByIdSpec(clubId);
+        return await _repository.FirstOrDefaultAsync(spec).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<Club>> GetClubsByIdsAsync(IEnumerable<ClubId> clubIds)
