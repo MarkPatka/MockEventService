@@ -133,7 +133,6 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        DbSet.Update(entity);
         await Context.SaveChangesAsync(cancellationToken);
     }
 

@@ -25,14 +25,13 @@ public class UpdateClubCommandHandler : IRequestHandler<UpdateClubCommand, Updat
             throw new EntityNotFoundException("The club doesn't exist");
         }
 
-        club = Club.Create(
-            club.Id,
+        club = Club.Update(
+            club,
             request.Name,
             request.Description,
             request.Interests,
             OwnerId.Create(request.OwnerId),
             request.IsPublic,
-            club.CreatedAt,
             DateTime.UtcNow);
 
         await _clubService.UpdateAsync(club).ConfigureAwait(true);

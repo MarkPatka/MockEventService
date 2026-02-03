@@ -60,20 +60,24 @@ public sealed class Club : AggregateRoot<ClubId>
         );
     }
 
-    public static Club Create(
-        ClubId id,
+    public static Club Update(
+        Club club,
         string name,
         string description,
         IEnumerable<string> interests,
         OwnerId owner,
         bool isPublic,
-        DateTime createdAt,
         DateTime? updatedAt)
 
     {
-        return new Club(
-            id, name, description, interests, owner, isPublic, createdAt, updatedAt
-        );
+        club.Name = name;
+        club.Description = description;
+        club._interests = interests.ToList();
+        club.Owner = owner;
+        club.IsPublic = isPublic;
+        club.UpdatedAt = updatedAt;
+        
+        return club;
     }
 
     public void AddMember(UserId userId, DateTime joinedAt)

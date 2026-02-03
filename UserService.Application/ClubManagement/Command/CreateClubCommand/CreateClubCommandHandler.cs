@@ -30,7 +30,6 @@ public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Creat
         }
 
         club = Club.Create(
-            ClubId.CreateUnique(),
             request.Name,
             request.Description,
             request.Interests,
