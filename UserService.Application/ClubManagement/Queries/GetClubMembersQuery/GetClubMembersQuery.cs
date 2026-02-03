@@ -4,4 +4,4 @@ using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Queries.GetClubMembersQuery;
 
-public record GetClubMembersQuery(ClubId id) : IRequest<IEnumerable<GetClubMembersResult>>;
+public record GetClubMembersQuery(Guid Id) : IRequest<IEnumerable<GetClubMembersResult>>;

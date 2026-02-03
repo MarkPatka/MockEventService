@@ -6,6 +6,8 @@ using UserService.Application.ClubManagement.Command.DeleteClubCommand;
 using UserService.Application.ClubManagement.Command.JoinClubCommand;
 using UserService.Application.ClubManagement.Command.LeaveClubCommand;
 using UserService.Application.ClubManagement.Command.UpdateClubCommand;
+using UserService.Application.ClubManagement.Common;
+using UserService.Application.ClubManagement.Queries.GetClubMembersQuery;
 using UserService.Application.ClubManagement.Queries.GetClubQuery;
 using UserService.Application.ClubManagement.Queries.GetClubsByUserQuery;
 using UserService.Application.ClubManagement.Queries.SearchClubsQuery;
@@ -90,8 +92,9 @@ public class ClubController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("users")]
-    public async Task<IActionResult> GetClubsByUser(GetClubsByUserRequest request)
+    //TODO
+    [HttpGet("owner")]
+    public async Task<IActionResult> GetClubsByOwner(GetClubsByUserRequest request)
     {
         // request -> map to query
         var query = _mapper.Map<GetClubsByUserQuery>(request);
@@ -105,18 +108,18 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-
+    
     [HttpGet("members")]
     public async Task<IActionResult> GetClubsMembers(GetClubMembersRequest request)
     {
         // request -> map to query
-        var query = _mapper.Map<GetClubsByUserQuery>(request);
+        var query = _mapper.Map<GetClubMembersQuery>(request);
 
         // send command to request handler
         var result = await _sender.Send(query);
 
         // map the result model to response model 
-        var response = _mapper.Map<GetClubsByUserResponse>(result);
+        var response = _mapper.Map<IEnumerable<GetClubMembersResponse>>(result);
 
         // get the handler response 
         return Ok(response);

@@ -1,3 +1,3 @@
 namespace UserService.Contracts.Clubs;
 
-public record GetClubMembersResponse(Guid userId);
+public record GetClubMembersResponse(Guid UserId, DateTime JoinedAt);

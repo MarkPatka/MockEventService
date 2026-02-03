@@ -1,3 +1,3 @@
 namespace UserService.Contracts.Clubs;
 
-public record GetClubMembersRequest(Guid clubId);
+public record GetClubMembersRequest(Guid Id);

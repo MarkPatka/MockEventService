@@ -22,9 +22,9 @@ public class GetClubMembersHandler
     public async Task<IEnumerable<GetClubMembersResult>> Handle(GetClubMembersQuery request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<ClubMember> clubMembers = await _clubService.GetClubMembersAsync(request.id)
+        IEnumerable<ClubMember> clubMembers = await _clubService.GetClubMembersAsync(ClubId.Create(request.Id))
             .ConfigureAwait(false);
 
-        return await Task.FromResult(clubMembers.Select(c => new GetClubMembersResult(c.UserId)));
+        return await Task.FromResult(clubMembers.Select(c => new GetClubMembersResult(c.UserId.Value, c.JoinedAt)));
     }
 }
