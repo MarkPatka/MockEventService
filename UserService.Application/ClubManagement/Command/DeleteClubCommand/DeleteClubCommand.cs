@@ -3,4 +3,4 @@ using UserService.Application.ClubManagement.Common;
 
 namespace UserService.Application.ClubManagement.Command.DeleteClubCommand;
 
-public record DeleteClubCommand(Guid id) : IRequest<DeleteClubResult>;
+public record DeleteClubCommand(Guid Id) : IRequest<DeleteClubResult>;

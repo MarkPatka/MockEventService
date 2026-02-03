@@ -6,6 +6,6 @@ public class DeleteClubCommandValidator : AbstractValidator<DeleteClubCommand>
 {
     public DeleteClubCommandValidator()
     {
-        RuleFor(x => x.id).NotEmpty();
+        RuleFor(x => x.Id).NotEmpty();
     }
 }

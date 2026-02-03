@@ -7,6 +7,6 @@ public class ClubByIdSpec : BaseSpecification<Club>
 {
     public ClubByIdSpec(ClubId clubId) : base(c => c.Id == clubId)
     {
-        ApplyNoTracking();
+        
     }
 }

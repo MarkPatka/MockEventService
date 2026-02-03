@@ -56,7 +56,7 @@ public class ClubService : IClubService
         return await _repository.AddAsync(club).ConfigureAwait(false);
     }
 
-    public async Task AddMember(ClubId clubId, UserId userId)
+    public async Task AddMember(ClubId clubId, UserId userId, DateTime joinTime)
     {
         var club = await GetClubByIdAsync(clubId).ConfigureAwait(false);
         if (club == null)
@@ -64,7 +64,7 @@ public class ClubService : IClubService
             throw new EntityNotFoundException("Club not found");
         }
 
-        club.AddMember(userId, DateTime.Now);
+        club.AddMember(userId, joinTime);
         await _repository.UpdateAsync(club).ConfigureAwait(false);
     }
 
@@ -76,7 +76,7 @@ public class ClubService : IClubService
             throw new EntityNotFoundException("Club not found");
         }
 
-        club.DeleteMember(userId, DateTime.Now);
+        club.DeleteMember(userId, DateTime.UtcNow);
         await _repository.UpdateAsync(club).ConfigureAwait(false);
     }
 

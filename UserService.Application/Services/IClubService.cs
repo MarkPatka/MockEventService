@@ -17,7 +17,7 @@ public interface IClubService
 
     Task<Club> AddAsync(Club club);
 
-    Task AddMember(ClubId clubId, UserId userId);
+    Task AddMember(ClubId clubId, UserId userId, DateTime joinTime);
     Task DeleteMember(ClubId clubId, UserId userId);
     Task DeleteAsync(Club club);
     Task UpdateAsync(Club club);

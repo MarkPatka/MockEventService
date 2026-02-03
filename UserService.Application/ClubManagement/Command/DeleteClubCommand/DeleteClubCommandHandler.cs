@@ -19,11 +19,10 @@ public class DeleteClubCommandHandler : IRequestHandler<DeleteClubCommand, Delet
 
     public async Task<DeleteClubResult> Handle(DeleteClubCommand request, CancellationToken cancellationToken)
     {
-        Club? club = await _clubService.GetClubByIdAsync(ClubId.Create(request.id)).ConfigureAwait(false);
-
+        Club? club = await _clubService.GetClubByIdAsync(ClubId.Create(request.Id)).ConfigureAwait(false);
         if (club == null)
         {
-            throw new EntityNotFoundException("Club doesn't exist");
+            throw new EntityNotFoundException("The club doesn't exist");
         }
 
         await _clubService.DeleteAsync(club).ConfigureAwait(true);

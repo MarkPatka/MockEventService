@@ -1,3 +1,8 @@
 namespace UserService.Contracts.Clubs;
 
-public record SearchClubsResponse(Guid id, string Name, string Description, Guid OwnerId);
+public record SearchClubsResponse(
+    Guid Id,
+    string Name,
+    string Description,
+    IEnumerable<string> Interests,
+    Guid OwnerId);

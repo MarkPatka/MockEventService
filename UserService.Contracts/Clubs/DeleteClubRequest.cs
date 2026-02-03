@@ -2,4 +2,4 @@ using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Contracts.Clubs;
 
-public record DeleteClubRequest(Guid id);
+public record DeleteClubRequest(Guid Id);

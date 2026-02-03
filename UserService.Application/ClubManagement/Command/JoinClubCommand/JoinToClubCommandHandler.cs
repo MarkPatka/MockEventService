@@ -20,8 +20,9 @@ public class JoinToClubCommandHandler : IRequestHandler<JoinToClubCommand, JoinT
 
     public async Task<JoinToClubResult> Handle(JoinToClubCommand request, CancellationToken cancellationToken)
     {
-        await _clubService.AddMember(ClubId.Create(request.ClubId), UserId.Create(request.UserId))
+        var joinedAt = DateTime.UtcNow;
+        await _clubService.AddMember(ClubId.Create(request.ClubId), UserId.Create(request.UserId), joinedAt)
             .ConfigureAwait(false);
-        return await Task.FromResult(new JoinToClubResult());
+        return await Task.FromResult(new JoinToClubResult(request.ClubId, request.UserId, joinedAt));
     }
 }

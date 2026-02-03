@@ -74,6 +74,22 @@ public class ClubController : ControllerBase
         return Ok(response);
     }
 
+    [HttpDelete]
+    public async Task<IActionResult> DeleteClub(DeleteClubRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<DeleteClubCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<DeleteClubResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+
     [HttpGet("users")]
     public async Task<IActionResult> GetClubsByUser(GetClubsByUserRequest request)
     {
@@ -137,7 +153,7 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-    
+
     [HttpPost("search")]
     public async Task<IActionResult> SearchClubs([FromBody] SearchClubsRequest request)
     {
