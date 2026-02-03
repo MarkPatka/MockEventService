@@ -17,15 +17,16 @@ public class ClubConfigurations : IEntityTypeConfiguration<Club>
     {
         builder.ToTable("Clubs");
         builder.Property(x => x.Id).HasConversion(
-            id => id.Value,
-            value => ClubId.Create(value))
+                id => id.Value,
+                value => ClubId.Create(value))
             .ValueGeneratedNever()
             .IsRequired();
 
         builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(2048);
 
-        builder.OwnsMany(c => c.ClubMembers, mb =>
+        builder.Ignore(c => c.ClubMembers);
+        builder.OwnsMany<ClubMember>("_members", mb =>
         {
             mb.ToTable("ClubMembers");
             mb.Property(x => x.JoinedAt).IsRequired();

@@ -88,7 +88,10 @@ public sealed class Club : AggregateRoot<ClubId>
 
     public void DeleteMember(UserId userId, DateTime joinedAt)
     {
-        if (_members.FirstOrDefault(m => m.UserId == userId) == null)
-            _members.Remove(ClubMember.Create(Id, userId, joinedAt));
+        var existMember = _members.FirstOrDefault(m => m.UserId == userId);
+        if (existMember != null)
+        {
+            _members.Remove(existMember);   
+        }
     }
 }

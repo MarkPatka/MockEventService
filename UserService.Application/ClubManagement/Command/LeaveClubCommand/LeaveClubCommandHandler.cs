@@ -18,18 +18,22 @@ public class LeaveClubCommandHandler : IRequestHandler<LeaveClubCommand, LeaveCl
 
     public async Task<LeaveClubResult> Handle(LeaveClubCommand request, CancellationToken cancellationToken)
     {
-        bool isMemberParticipated = await _clubService
-            .IsMemberParticipatedAsync(ClubId.Create(request.ClubId), UserId.Create(request.UserId))
-            .ConfigureAwait(false);
+        var clubId = ClubId.Create(request.ClubId);
+        var userId = UserId.Create(request.UserId);
+        var club = await _clubService.GetClubByIdAsync(clubId).ConfigureAwait(false);
+        if (club == null)
+        {
+            throw new EntityNotFoundException("Club not found");
+        }
 
+        bool isMemberParticipated = await _clubService
+            .IsMemberParticipatedAsync(clubId, userId).ConfigureAwait(false);
         if (!isMemberParticipated)
         {
             throw new AlreadyDoneException("You have already left the club");
         }
-
-        await _clubService.DeleteMember(ClubId.Create(request.ClubId), UserId.Create(request.UserId))
-            .ConfigureAwait(false);
-
+        
+        await _clubService.DeleteMember(club, userId, DateTime.UtcNow).ConfigureAwait(false);
         return await Task.FromResult(new LeaveClubResult());
     }
 }

@@ -115,7 +115,6 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        await DbSet.AddAsync(entity, cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);
         return entity;
     }
@@ -148,7 +147,6 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        DbSet.Remove(entity);
         await Context.SaveChangesAsync(cancellationToken);
     }
 
