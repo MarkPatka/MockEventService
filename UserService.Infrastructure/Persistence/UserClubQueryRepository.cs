@@ -28,6 +28,7 @@ internal sealed class UserClubQueryRepository : IUserClubQueryRepository
                 Id = c.Id.Value,
                 Name = c.Name,
                 Description = c.Description,
+                Owner = c.Owner.Value,
                 IsPublic = c.IsPublic,
                 CreatedAt = c.CreatedAt
             })
