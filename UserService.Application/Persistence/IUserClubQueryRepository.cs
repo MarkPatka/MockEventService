@@ -5,5 +5,5 @@ namespace UserService.Application.Persistence;
 
 public interface IUserClubQueryRepository
 {
-    Task<IReadOnlyList<ClubDto>> GetClubsByUser(UserId userId);
+    Task<IReadOnlyList<ClubDto>> GetClubsByUserAsync(UserId userId);
 }

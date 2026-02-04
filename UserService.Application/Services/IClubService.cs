@@ -1,3 +1,4 @@
+using UserService.Application.ClubManagement.Dto;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
@@ -10,8 +11,7 @@ public interface IClubService
         OwnerId? ownerId = null);
 
     Task<Club?> GetClubByIdAsync(ClubId clubId);
-    Task<IEnumerable<Club>> GetClubsByIdsAsync(IEnumerable<ClubId> clubIds);
-    Task<IEnumerable<Club>> GetClubsByUserAsync(UserId userId);
+    Task<IEnumerable<ClubDto>> GetClubsByUserAsync(UserId userId);
     Task<IEnumerable<ClubMember>> GetClubMembersAsync(ClubId clubId);
     Task<bool> IsMemberParticipatedAsync(ClubId clubId, UserId userId);
 

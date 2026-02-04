@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using UserService.Application.ClubManagement.Common;
+using UserService.Application.ClubManagement.Dto;
 using UserService.Application.Persistence;
 using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
@@ -21,10 +22,10 @@ public class GetClubsQueryByUserHandler
     public async Task<IEnumerable<GetClubsByUserResult>> Handle(GetClubsByUserQuery request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<Club> clubs = await _clubService.GetClubsByUserAsync(UserId.Create(request.UserId))
+        IEnumerable<ClubDto> clubs = await _clubService.GetClubsByUserAsync(UserId.Create(request.UserId))
             .ConfigureAwait(false);
 
         return await Task.FromResult(clubs.Select(c =>
-            new GetClubsByUserResult(c.Id.Value, c.Name, c.Description, c.Owner.Value, c.IsPublic)));
+            new GetClubsByUserResult(c.Id, c.Name, c.Description, c.Owner, c.IsPublic)));
     }
 }

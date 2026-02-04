@@ -15,23 +15,29 @@ internal sealed class UserClubQueryRepository : IUserClubQueryRepository
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<IReadOnlyList<ClubDto>> GetClubsByUser(UserId userId)
+    public async Task<IReadOnlyList<ClubDto>> GetClubsByUserAsync(UserId userId)
     {
         await using var context = _dbContextFactory.CreateDbContext();
 
-        return await (
-            from club in context.Clubs.AsNoTracking()
-            join member in context.Set<ClubMember>()
-                on club.Id equals member.ClubId
-            where member.UserId == userId
-            select new ClubDto
+        return await context.Clubs
+            .AsNoTracking()
+            .Where(c => EF.Property<List<ClubMember>>(c, "_members")
+                .Any(m => m.UserId == userId))
+            .Select(c => new ClubDto
             {
-                Id = club.Id.Value,
-                Name = club.Name,
-                Description = club.Description,
-                IsPublic = club.IsPublic,
-                CreatedAt = club.CreatedAt
-            }
-        ).ToListAsync();
+                Id = c.Id.Value,
+                Name = c.Name,
+                Description = c.Description,
+                IsPublic = c.IsPublic,
+                CreatedAt = c.CreatedAt
+            })
+            .ToListAsync();
     }
+}
+
+public sealed class ClubMemberRead
+{
+    public Guid ClubId { get; init; }
+    public Guid UserId { get; init; }
+    public DateTime JoinedAt { get; init; }
 }

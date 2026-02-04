@@ -93,8 +93,8 @@ public class ClubController : ControllerBase
     }
 
     //TODO
-    [HttpGet("owner")]
-    public async Task<IActionResult> GetClubsByOwner(GetClubsByUserRequest request)
+    [HttpGet("participant")]
+    public async Task<IActionResult> GetClubsByParticipant(GetClubsByUserRequest request)
     {
         // request -> map to query
         var query = _mapper.Map<GetClubsByUserQuery>(request);
