@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using MockEventService.Domain.Common.Abstract;
+﻿using MockEventService.Domain.Common.Abstract;
 using MockEventService.Domain.EventAggregate.DomainEvents;
 using MockEventService.Domain.EventAggregate.Entities;
 using MockEventService.Domain.EventAggregate.Enumerations;
@@ -10,24 +9,26 @@ namespace MockEventService.Domain.EventAggregate;
 
 public sealed class Event : AggregateRoot<EventId>
 {
-    private readonly List<Review> _reviews = [];
     private readonly List<Participant> _participants = [];
-
     public IReadOnlyCollection<Participant> Participants => _participants.AsReadOnly();
-    public IReadOnlyCollection<Review> Reviews => _reviews.AsReadOnly();
 
-    public string Title { get; private set; } = string.Empty;
-    public string Description { get; private set; } = string.Empty;
-    public EventType EventType { get; private set; } = null!;
-    public Location Location { get; private set; } = null!;
-    public DateTime StartDate { get; private set; }
-    public DateTime EndDate { get; private set; }
-    public int MaxParticipants { get; private set; }
-    public EventStatus Status { get; private set; } = EventStatus.Draft;
-    public OrganizerId OrganizerId { get; private set; } = null!;
-
-    public DateTime CreatedAt { get; private set; }
+    public string Title             { get; private set; } = string.Empty;
+    public string Description       { get; private set; } = string.Empty;
+    public EventType EventType      { get; private set; } = null!;
+    public Location Location        { get; private set; } = null!;
+    public DateTime StartDate       { get; private set; }
+    public DateTime EndDate         { get; private set; }
+    public int MaxParticipants      { get; private set; }
+    public EventStatus Status       { get; private set; } = EventStatus.Draft;
+    
+    public UserId OrganizerId   { get; private set; } = null!;
+    public string OrganizerName { get; private set; } = string.Empty;
+    
+    public DateTime CreatedAt  { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
+
+    public int ReviewsCount       { get; private set; }
+    public decimal? AverageRating { get; private set; } = null;
 
     private Event() { }
 
@@ -40,11 +41,12 @@ public sealed class Event : AggregateRoot<EventId>
         DateTime startDate,
         DateTime endDate,
         int maxParticipants,
-        OrganizerId organizerId,
+        UserId organizerId,
         DateTime createdAt,
-        DateTime updatedAt
-        )
-    : base(id)
+        DateTime updatedAt,
+        int reviewsCount = 0,
+        decimal? averageRating = null) 
+        : base(id)
     {
         Title = title;
         Description = description;
@@ -54,6 +56,8 @@ public sealed class Event : AggregateRoot<EventId>
         EndDate = endDate;
         MaxParticipants = maxParticipants;
         OrganizerId = organizerId;
+        ReviewsCount = reviewsCount;
+        AverageRating = averageRating;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }
@@ -67,9 +71,11 @@ public sealed class Event : AggregateRoot<EventId>
         DateTime startDate,
         DateTime endDate,
         int maxParticipants,
-        OrganizerId organizerId,
+        UserId organizerId,
         DateTime createdAt,
-        DateTime updatedAt)
+        DateTime updatedAt,
+        int reviewsCount = 0,
+        decimal? averageRating = null)
     {
         var @event = new Event(
             EventId.CreateUnique(),
@@ -82,7 +88,9 @@ public sealed class Event : AggregateRoot<EventId>
             maxParticipants,
             organizerId,
             createdAt,
-            updatedAt);
+            updatedAt,
+            reviewsCount,
+            averageRating);
 
         @event.AddDomainEvent(new EventCreated(@event.Id, DateTime.UtcNow)); 
         return @event;
@@ -101,7 +109,7 @@ public sealed class Event : AggregateRoot<EventId>
     }
 
     // ON EVENT CANCELLED
-    public void Cancell()
+    public void Cancel()
     {
         if (Status != EventStatus.Active)
             throw new InvalidOperationException("Only active events can be cancelled");
@@ -111,4 +119,21 @@ public sealed class Event : AggregateRoot<EventId>
 
         AddDomainEvent(new EventCancelled(Id, DateTime.UtcNow));
     }
+
+    public void UpdateReviewStats(int reviewsCount, decimal averageRating)
+    {
+        if (reviewsCount < 0)
+            throw new ArgumentException("Reviews count cannot be negative", nameof(reviewsCount));
+
+        if (averageRating < 0 || averageRating > 5)
+            throw new ArgumentException("Average rating must be between 0 and 5", nameof(averageRating));
+
+        ReviewsCount = reviewsCount;
+        AverageRating = reviewsCount > 0 ? averageRating : null; 
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public string GetRatingDisplay() => AverageRating.HasValue
+        ? $"{AverageRating.Value:F2}"
+        : "No rating yet";
 }
