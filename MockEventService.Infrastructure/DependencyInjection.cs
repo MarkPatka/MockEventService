@@ -33,6 +33,8 @@ public static class DependencyInjection
         services
             .AddTransient<IMockConfigurationService, MockConfigurationService>();
 
+        services
+            .AddScoped<IEventService, EventService>();
 
         return services;
     }
@@ -51,7 +53,14 @@ public static class DependencyInjection
 
     private static IServiceCollection RegisterDbContext(this IServiceCollection services)
     {
-        // USUALLY WE DO SMTH LIKE THIS: .AddDbContext<MockEventServiceDbContext>()
+        services.AddDbContext<MockEventServiceDbContext>((provider, options) =>
+        {
+            var dbSettings = provider
+                .GetRequiredService<IOptions<EventsDatabaseConnection>>().Value;
+
+            options.UseNpgsql(dbSettings.CONNECTION_STRING, cfg => cfg.EnableRetryOnFailure(2));
+        }, ServiceLifetime.Scoped);
+
 
         services.AddDbContextFactory<MockEventServiceDbContext>((provider, options) =>
         {

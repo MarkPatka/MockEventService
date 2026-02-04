@@ -8,21 +8,9 @@ using System.Data;
 
 namespace MockEventService.Infrastructure.Persistence;
 
-// TRANSACTIONAL OUTBOX
-// OUTBOX UoW - IS ALTERNATIVE
-// Outbox Message entity for storing unpublished events
-//public class OutboxMessage
-//{
-//    public Guid Id { get; set; }
-//    public string Type { get; set; } = string.Empty;
-//    public string Content { get; set; } = string.Empty;
-//    public DateTime OccurredOn { get; set; }
-//    public DateTime? ProcessedOn { get; set; }
-//    public string? Error { get; set; }
-//}
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly DbContext _context;
+    private readonly MockEventServiceDbContext _context;
     private readonly IPublisher _publisher;
     private readonly ILogger<UnitOfWork> _logger;
    
@@ -30,7 +18,7 @@ public class UnitOfWork : IUnitOfWork
     private bool _disposed;
 
     public UnitOfWork(
-        DbContext context,
+        MockEventServiceDbContext context,
         IPublisher publisher,
         ILogger<UnitOfWork> logger)
     {
