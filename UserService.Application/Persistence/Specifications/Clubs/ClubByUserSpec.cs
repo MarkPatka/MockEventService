@@ -4,9 +4,9 @@ using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.Persistence.Specifications.Clubs;
 
-public class ClubByUserSpec : BaseSpecification<Club>
+public class ClubByUserSpec
 {
-    public ClubByUserSpec(UserId userId) : base(c => c.ClubMembers.Select(m => m.UserId).Contains(userId))
+    public ClubByUserSpec(UserId userId)
     {
     }
 }

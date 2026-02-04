@@ -12,7 +12,7 @@ public sealed class Club : AggregateRoot<ClubId>
 
     private List<string> _interests = new();
     public IReadOnlyCollection<string> Interests => _interests;
-
+    
     private readonly List<ClubMember> _members = [];
     public IReadOnlyCollection<ClubMember> ClubMembers => _members.AsReadOnly();
 

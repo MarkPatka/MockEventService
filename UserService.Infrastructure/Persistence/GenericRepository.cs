@@ -13,7 +13,6 @@ public class GenericRepository<TEntity, TId>
     where TEntity : class
     where TId : IEntityId
 {
-    private readonly IDbContextFactory<UserServiceDbContext> _dbContextFactory = null!;
     protected readonly DbContext Context;
     protected readonly DbSet<TEntity> DbSet;
 
@@ -115,6 +114,7 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        DbSet.Add(entity);
         await Context.SaveChangesAsync(cancellationToken);
         return entity;
     }
@@ -132,6 +132,7 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        DbSet.Update(entity);
         await Context.SaveChangesAsync(cancellationToken);
     }
 
@@ -147,6 +148,7 @@ public class GenericRepository<TEntity, TId>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        DbSet.Remove(entity);
         await Context.SaveChangesAsync(cancellationToken);
     }
 

@@ -1,18 +1,25 @@
-using System.Collections;
-using UserService.Application.Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using UserService.Application.Persistence;
 using UserService.Application.Persistence.Specifications.Clubs;
 using UserService.Application.Services;
 using UserService.Domain.ClubAggregate;
 using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
+using UserService.Infrastructure.Persistence;
 
 namespace UserService.Infrastructure.Services;
 
 public class ClubService : IClubService
 {
     private readonly IRepository<Club, ClubId> _repository;
-    public ClubService(IRepository<Club, ClubId> repository) => _repository = repository;
+    private readonly IDbContextFactory<UserServiceDbContext> _dbContextFactory;
+
+    public ClubService(IRepository<Club, ClubId> repository,
+        IDbContextFactory<UserServiceDbContext> dbContextFactory)
+    {
+        _repository = repository;
+        _dbContextFactory = dbContextFactory;
+    }
 
     public async Task<IEnumerable<Club>> SearchClubsAsync(string name, IEnumerable<string>? interests = null,
         OwnerId? ownerId = null)
@@ -35,8 +42,11 @@ public class ClubService : IClubService
 
     public async Task<IEnumerable<Club>> GetClubsByUserAsync(UserId userId)
     {
-        var spec = new ClubByUserSpec(userId);
-        return await _repository.ListAsync(spec).ConfigureAwait(false);
+        using var context = _dbContextFactory.CreateDbContext();
+        return await context.Clubs
+            .Where(c => EF.Property<List<ClubMember>>(c, "_members")
+                .Any(m => m.UserId == userId))
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<ClubMember>> GetClubMembersAsync(ClubId clubId)
