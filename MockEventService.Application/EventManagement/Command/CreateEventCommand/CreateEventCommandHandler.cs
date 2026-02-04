@@ -11,18 +11,18 @@ namespace MockEventService.Application.EventManagement.Command.CreateEventComman
 public class CreateEventCommandHandler
     : IRequestHandler<CreateEventCommand, CreateEventResult>
 {
-    private readonly IRepository<Event, EventId> _repository;
+    //private readonly IRepository<Event, EventId> _repository;
     private readonly IEventService _eventService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITimeProviderService _timeProvider;
 
     public CreateEventCommandHandler(
-        IRepository<Event, EventId> repository, 
+        //IRepository<Event, EventId> repository, 
         IEventService eventService, 
         ITimeProviderService timeProvider, 
         IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        //_repository = repository;
         _eventService = eventService;
         _timeProvider = timeProvider;
         _unitOfWork = unitOfWork;
@@ -61,15 +61,16 @@ public class CreateEventCommandHandler
         );
 
         // move to service!
-        var newEntity = await _repository.AddAsync(newEvent, cancellationToken);
-       
+        //var newEntity = await _repository.AddAsync(newEvent, cancellationToken);
+        await _eventService.CreateEventAsync(newEvent, cancellationToken);
+
         await _unitOfWork.SaveEntitiesAsync(cancellationToken); /// NEW 
 
         // return result
         return new CreateEventResult(
-            newEntity.Id.Value,
-            newEntity.CreatedAt,
-            newEntity.UpdatedAt,
-            newEntity.Status.Id);
+            newEvent.Id.Value,
+            newEvent.CreatedAt,
+            newEvent.UpdatedAt,
+            newEvent.Status.Id);
     }
 }

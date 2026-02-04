@@ -1,5 +1,9 @@
-﻿namespace MockEventService.Domain.EventAggregate.DomainEvents;
+﻿using MockEventService.Domain.Common.Abstract;
+using MockEventService.Domain.EventAggregate.ValueObjects;
 
-internal class EventCancelled
+namespace MockEventService.Domain.EventAggregate.DomainEvents;
+
+public sealed record EventCancelled(EventId EventId, DateTime CancelledAt) : IDomainEvent
 {
+    public DateTime OccurredOn => CancelledAt;
 }
