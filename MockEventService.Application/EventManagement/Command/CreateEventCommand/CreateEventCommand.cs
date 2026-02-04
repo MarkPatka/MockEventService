@@ -5,15 +5,13 @@ using MockEventService.Domain.EventAggregate.ValueObjects;
 
 namespace MockEventService.Application.EventManagement.Command.CreateEventCommand;
 
-
-//...
 public record CreateEventCommand(
     string Title,
     EventType EventType,
     DateTime StartDate,
     DateTime EndDate,
     int MaxParticipants,
-    OrganizerId OrganizerId,
+    UserId OrganizerId,
     string? Description = null,
     Location? Location = null
     ) : IRequest<CreateEventResult>;
