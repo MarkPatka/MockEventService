@@ -1,7 +1,7 @@
 namespace UserService.Contracts.UserProfiles;
 
 public record UpdateUserProfileRequest(
-    Guid id,
+    Guid Id,
     string DisplayName,
     string Bio,
     Uri? AvatarUri,

@@ -1,5 +1,3 @@
-using UserService.Domain.UserProfileAggregate.ValueObjects;
-
 namespace UserService.Contracts.UserProfiles;
 
-public record GetUserProfileInterestsRequest(Guid id);
+public record GetUserProfileInterestsRequest(Guid Id);

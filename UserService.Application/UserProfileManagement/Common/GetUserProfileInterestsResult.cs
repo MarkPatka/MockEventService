@@ -1,3 +1,3 @@
 namespace UserService.Application.UserProfileManagement.Common;
 
-public record GetUserProfileInterestsResult(IEnumerable<string> interests);
+public record GetUserProfileInterestsResult(IEnumerable<string> Interests);

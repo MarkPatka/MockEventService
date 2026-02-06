@@ -1,5 +1,3 @@
-using UserService.Domain.UserProfileAggregate.ValueObjects;
-
 namespace UserService.Contracts.UserProfiles;
 
-public record UpdateUserProfileInterestsRequest(Guid id, IEnumerable<string> interests);
+public record UpdateUserProfileInterestsRequest(Guid Id, IEnumerable<string> Interests);
