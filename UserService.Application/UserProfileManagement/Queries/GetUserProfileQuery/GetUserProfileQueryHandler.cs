@@ -20,7 +20,7 @@ public class GetUserProfileQueryHandler
 
     public async Task<GetUserProfileResult> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
     {
-        UserProfile? userProfile = await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.userId))
+        UserProfile? userProfile = await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.UserId))
             .ConfigureAwait(false);
 
         if (userProfile == null)

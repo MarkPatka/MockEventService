@@ -8,7 +8,7 @@ public sealed class UserProfile : AggregateRoot<UserId>
     public string DisplayName { get; private set; } = string.Empty;
     public string Bio { get; private set; } = string.Empty;
     public Uri? AvatarUri { get; private set; }
-    private List<string> _interests { get; set; }
+    private List<string> _interests = new();
     public IReadOnlyList<string> Interests => _interests;
     public DateTime? BirthDate { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -30,6 +30,11 @@ public sealed class UserProfile : AggregateRoot<UserId>
     )
         : base(id)
     {
+        DisplayName = displayName;
+        Bio = bio;
+        AvatarUri = avatarUri;
+        _interests = interests.ToList();
+        BirthDate = birthDate;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }

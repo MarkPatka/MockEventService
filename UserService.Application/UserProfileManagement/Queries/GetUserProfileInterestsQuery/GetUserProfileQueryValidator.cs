@@ -6,6 +6,6 @@ public class GetUserProfileInterestsQueryValidator : AbstractValidator<GetUserPr
 {
     public GetUserProfileInterestsQueryValidator()
     {
-        RuleFor(x => x.userId).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
     }
 }

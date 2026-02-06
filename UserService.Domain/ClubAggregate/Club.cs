@@ -12,7 +12,7 @@ public sealed class Club : AggregateRoot<ClubId>
 
     private List<string> _interests = new();
     public IReadOnlyCollection<string> Interests => _interests;
-    
+
     private readonly List<ClubMember> _members = [];
     public IReadOnlyCollection<ClubMember> ClubMembers => _members.AsReadOnly();
 
@@ -70,14 +70,38 @@ public sealed class Club : AggregateRoot<ClubId>
         DateTime? updatedAt)
 
     {
-        club.Name = name;
-        club.Description = description;
-        club._interests = interests.ToList();
-        club.Owner = owner;
-        club.IsPublic = isPublic;
+        club.SetName(name);
+        club.SetDescription(description);
+        club.SetInterests(interests);
+        club.SetOwner(owner);
+        club.SetIsPublic(isPublic);
         club.UpdatedAt = updatedAt;
-        
         return club;
+    }
+
+    private void SetName(string name)
+    {
+        Name = name;
+    }
+
+    private void SetDescription(string description)
+    {
+        Description = description;
+    }
+
+    private void SetIsPublic(bool isPublic)
+    {
+        IsPublic = isPublic;
+    }
+
+    private void SetInterests(IEnumerable<string> interests)
+    {
+        _interests = interests.ToList();
+    }
+
+    private void SetOwner(OwnerId owner)
+    {
+        Owner = owner;
     }
 
     public void AddMember(UserId userId, DateTime joinedAt)
@@ -91,7 +115,7 @@ public sealed class Club : AggregateRoot<ClubId>
         var existMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existMember != null)
         {
-            _members.Remove(existMember);   
+            _members.Remove(existMember);
         }
     }
 }

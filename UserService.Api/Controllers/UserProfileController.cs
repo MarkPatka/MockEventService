@@ -1,6 +1,7 @@
 ﻿using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Application.UserProfileManagement.Command.CreateUserProfileCommand;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
 using UserService.Application.UserProfileManagement.Common;
@@ -38,6 +39,23 @@ public class UserProfileController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> CreateUserProfile([FromBody] CreateUserProfileRequest request)
+    {
+        // request -> map to command
+        var command = _mapper.Map<CreateUserProfileCommand>(request);
+
+        // send command to request handler
+        var result = await _sender.Send(command);
+
+        // map the result model to response model 
+        var response = _mapper.Map<CreateUserProfileResponse>(result);
+
+        // get the handler response 
+        return Ok(response);
+    }
+
 
     [HttpPut]
     public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)

@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using UserService.Application.UserProfileManagement.Command.CreateUserProfileCommand;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileCommand;
 using UserService.Application.UserProfileManagement.Command.UpdateUserProfileInterestsCommand;
 using UserService.Application.UserProfileManagement.Common;
@@ -15,6 +16,9 @@ public class UserProfileMappingConfiguration : IRegister
         config.NewConfig<GetUserProfileRequest, GetUserProfileQuery>();
         config.NewConfig<GetUserProfileResult, GetUserProfileResponse>();
 
+        config.NewConfig<CreateUserProfileRequest, CreateUserProfileCommand>();
+        config.NewConfig<CreateUserProfileResult, CreateUserProfileResponse>();
+        
         config.NewConfig<UpdateUserProfileRequest, UpdateUserProfileCommand>();
         config.NewConfig<UpdateUserProfileResult, UpdateUserProfileResponse>();
 

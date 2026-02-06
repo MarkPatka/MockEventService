@@ -12,5 +12,7 @@ public interface IUserProfileService
     Task<IReadOnlyCollection<string?>> GetUsersInterestsAsync(UserId userId,
         CancellationToken cancellationToken = default);
 
+    Task<UserProfile?> GetUserByNameAsync(string displayName, CancellationToken cancellationToken = default);
+
     Task<UserProfile?> GetUserProfileByIdAsync(UserId userId, CancellationToken cancellationToken = default);
 }

@@ -24,7 +24,7 @@ public class UserProfileService : IUserProfileService
     {
         await _repository.UpdateAsync(userProfile, cancellationToken).ConfigureAwait(false);
     }
-    
+
     public async Task DeleteAsync(UserProfile userProfile, CancellationToken cancellationToken = default)
     {
         await _repository.DeleteAsync(userProfile, cancellationToken).ConfigureAwait(false);
@@ -46,6 +46,14 @@ public class UserProfileService : IUserProfileService
         IReadOnlyList<UserProfile> userProfiles =
             await _repository.ListAsync(spec, cancellationToken).ConfigureAwait(false);
 
+        return userProfiles.FirstOrDefault();
+    }
+
+    public async Task<UserProfile?> GetUserByNameAsync(string displayName,
+        CancellationToken cancellationToken = default)
+    {
+        var spec = new UserByUserNameSpec(displayName);
+        IReadOnlyList<UserProfile> userProfiles = await _repository.ListAsync(spec, cancellationToken).ConfigureAwait(false);
         return userProfiles.FirstOrDefault();
     }
 }
