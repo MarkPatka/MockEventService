@@ -24,7 +24,6 @@ public static class DependencyInjection
 
     private static IServiceCollection RegisterRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUserClubQueryRepository, UserClubQueryRepository>();
         services.AddScoped<IRepository<Club, ClubId>, GenericRepository<Club, ClubId>>();
         services.AddScoped<IRepository<UserProfile, UserId>, GenericRepository<UserProfile, UserId>>();
         services.AddScoped<IClubService, ClubService>();

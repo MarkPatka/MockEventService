@@ -1,12 +1,11 @@
 using UserService.Domain.ClubAggregate;
-using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
 
 namespace UserService.Application.Persistence.Specifications.Clubs;
 
-public class ClubByUserSpec
+public class ClubsByUserSpec : BaseSpecification<Club>
 {
-    public ClubByUserSpec(UserId userId)
+    public ClubsByUserSpec(UserId userId) : base(c => c.ClubMembers.Any(c => c.UserId == userId))
     {
     }
 }

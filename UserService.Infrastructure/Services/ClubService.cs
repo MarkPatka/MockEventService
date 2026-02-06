@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using UserService.Application.ClubManagement.Dto;
 using UserService.Application.Persistence;
 using UserService.Application.Persistence.Specifications.Clubs;
 using UserService.Application.Services;
@@ -12,13 +10,10 @@ namespace UserService.Infrastructure.Services;
 public class ClubService : IClubService
 {
     private readonly IRepository<Club, ClubId> _repository;
-    private readonly IUserClubQueryRepository  _userClubQueryRepository;
 
-    public ClubService(IRepository<Club, ClubId> repository,
-        IUserClubQueryRepository  userClubQueryRepository)
+    public ClubService(IRepository<Club, ClubId> repository)
     {
         _repository = repository;
-        _userClubQueryRepository = userClubQueryRepository;
     }
 
     public async Task<IEnumerable<Club>> SearchClubsAsync(string name, IEnumerable<string>? interests = null,
@@ -34,20 +29,11 @@ public class ClubService : IClubService
         return await _repository.FirstOrDefaultAsync(spec).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<ClubDto>> GetClubsByUserAsync(UserId userId)
+    public async Task<IEnumerable<Club>> GetClubsByUserAsync(UserId userId)
     {
-        return await _userClubQueryRepository.GetClubsByUserAsync(userId);
+        var spec = new ClubsByUserSpec(userId);
+        return await _repository.ListAsync(spec).ConfigureAwait(false);
     }
-
-    //какая - то хрень
-    /*public async Task<IEnumerable<Club>> GetClubsByUserAsync(UserId userId)
-    {
-        using var context = _dbContextFactory.CreateDbContext();
-        return await context.Clubs
-            .Where(c => EF.Property<List<ClubMember>>(c, "_members")
-                .Any(m => m.UserId == userId))
-            .ToListAsync();
-    }*/
 
     public async Task<IEnumerable<ClubMember>> GetClubMembersAsync(ClubId clubId)
     {
