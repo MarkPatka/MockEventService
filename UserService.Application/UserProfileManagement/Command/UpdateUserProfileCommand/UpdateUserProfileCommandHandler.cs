@@ -27,15 +27,14 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
             throw new Exception("UserProfile doesn't exist");
         }
 
-        userProfile = UserProfile.Create(
-            userProfile.Id,
+        userProfile = UserProfile.Update(
+            userProfile,
             request.DisplayName,
             request.Bio,
             request.AvatarUri,
             request.Interests,
             request.BirthDate,
-            userProfile.CreatedAt,
-            DateTime.Now
+            DateTime.UtcNow
         );
 
         await _userProfileService.UpdateAsync(userProfile).ConfigureAwait(false);

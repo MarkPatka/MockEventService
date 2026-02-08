@@ -21,22 +21,21 @@ public class
         CancellationToken cancellationToken)
     {
         UserProfile? userProfile =
-            await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.Id)).ConfigureAwait(false);
+            await _userProfileService.GetUserProfileByIdAsync(UserId.Create(request.UserId)).ConfigureAwait(false);
 
         if (userProfile == null)
         {
             throw new Exception("UserProfile doesn't exist");
         }
 
-        userProfile = UserProfile.Create(
-            userProfile.Id,
+        userProfile = UserProfile.Update(
+            userProfile,
             userProfile.DisplayName,
             userProfile.Bio,
             userProfile.AvatarUri,
             request.Interests,
             userProfile.BirthDate,
-            userProfile.CreatedAt,
-            DateTime.Now
+            DateTime.UtcNow
         );
 
         await _userProfileService.UpdateAsync(userProfile).ConfigureAwait(false);

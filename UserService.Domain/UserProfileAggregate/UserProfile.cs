@@ -59,24 +59,46 @@ public sealed class UserProfile : AggregateRoot<UserId>
             updatedAt);
     }
 
-    public static UserProfile Create(
-        UserId id,
+    public static UserProfile Update(
+        UserProfile userProfile,
         string displayName,
         string bio,
         Uri? avatarUri,
         IReadOnlyList<string> interests,
         DateTime? birthDate,
-        DateTime createdAt,
         DateTime? updatedAt)
     {
-        return new UserProfile(
-            id,
-            displayName,
-            bio,
-            avatarUri,
-            interests,
-            birthDate,
-            createdAt,
-            updatedAt);
+        userProfile.SetBirthDate(birthDate);
+        userProfile.SetInterests(interests);
+        userProfile.SetAvatarUri(avatarUri);
+        userProfile.SetBio(bio);
+        userProfile.SetDisplayName(displayName);
+        userProfile.UpdatedAt = updatedAt;
+        return userProfile;
+    }
+    
+    private void SetBirthDate(DateTime? birthDate)
+    {
+        BirthDate = birthDate;
+    }
+    
+    private void SetInterests(IReadOnlyList<string> interests)
+    {
+        _interests =  interests.ToList();
+    }
+    
+    private void SetAvatarUri(Uri? avatarUri)
+    {
+        AvatarUri = avatarUri;
+    }
+    
+    private void SetBio(string bio)
+    {
+        Bio = bio;
+    }
+    
+    private void SetDisplayName(string displayName)
+    {
+        DisplayName = displayName;
     }
 }

@@ -27,7 +27,6 @@ public class CreateUserProfileCommandHandler : IRequestHandler<CreateUserProfile
         }
 
         userProfile = UserProfile.Create(
-            UserId.CreateUnique(),
             request.DisplayName,
             request.Bio,
             request.AvatarUri,

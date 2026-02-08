@@ -8,7 +8,7 @@ public class
 {
     public UpdateUserProfileInterestsCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.Interests).IsInEnum();
     }
 }

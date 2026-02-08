@@ -1,3 +1,3 @@
 namespace UserService.Contracts.UserProfiles;
 
-public record GetUserProfileInterestsRequest(Guid Id);
+public record GetUserProfileInterestsRequest(Guid UserId);

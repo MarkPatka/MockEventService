@@ -91,8 +91,7 @@ public class ClubController : ControllerBase
         // get the handler response 
         return Ok(response);
     }
-
-    //TODO
+    
     [HttpGet("participant")]
     public async Task<IActionResult> GetClubsByParticipant(GetClubsByUserRequest request)
     {

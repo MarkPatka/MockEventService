@@ -1,7 +1,5 @@
 ﻿namespace UserService.Application.Persistence;
 
-
-// TODO
 // Contravariance / Cvariance ???
 // "in" - type parameter is only used as INPUT (method parameters), never as output (return types)
 // Allows to use a [MORE derived](EventId) type where a [LESS derived](IEntityId) type is expected
