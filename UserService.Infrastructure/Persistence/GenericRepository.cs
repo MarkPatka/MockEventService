@@ -13,13 +13,13 @@ public class GenericRepository<TEntity, TId>
     where TEntity : class
     where TId : IEntityId
 {
-    protected readonly DbContext Context;
-    protected readonly DbSet<TEntity> DbSet;
+    private readonly UserServiceDbContext _context;
+    private readonly DbSet<TEntity> DbSet;
 
-    public GenericRepository(IDbContextFactory<UserServiceDbContext> dbContextFactory)
+    public GenericRepository(UserServiceDbContext context)
     {
-        Context = dbContextFactory.CreateDbContext();
-        DbSet = Context.Set<TEntity>();
+        _context = context;
+        DbSet = _context.Set<TEntity>();
     }
 
     public virtual async Task<TEntity?> GetByIdAsync(
@@ -39,7 +39,7 @@ public class GenericRepository<TEntity, TId>
         var query = ApplySpecification(specification);
 
         // 2.Get EF Core metadata to find the primary key property name
-        var keyProperty = Context.Model
+        var keyProperty = _context.Model
             .FindEntityType(typeof(TEntity))?
             .FindPrimaryKey()?.Properties[0];
 
@@ -115,7 +115,6 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         DbSet.Add(entity);
-        await Context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
@@ -124,7 +123,6 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         await DbSet.AddRangeAsync(entities, cancellationToken);
-        await Context.SaveChangesAsync(cancellationToken);
         return entities;
     }
 
@@ -133,7 +131,6 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         DbSet.Update(entity);
-        await Context.SaveChangesAsync(cancellationToken);
     }
 
     public virtual Task UpdateRangeAsync(
@@ -149,7 +146,6 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         DbSet.Remove(entity);
-        await Context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteRangeAsync(
@@ -157,7 +153,6 @@ public class GenericRepository<TEntity, TId>
         CancellationToken cancellationToken = default)
     {
         DbSet.RemoveRange(entities);
-        await Context.SaveChangesAsync(cancellationToken);
     }
 
     protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)

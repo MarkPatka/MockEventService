@@ -1,3 +1,4 @@
+using System;
 using UserService.Domain.ClubAggregate.ValueObjects;
 
 namespace UserService.Application.ClubManagement.Common;

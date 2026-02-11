@@ -1,3 +1,4 @@
+using UserService.Domain.ClubAggregate.DomainEvents;
 using UserService.Domain.ClubAggregate.ValueObjects;
 using UserService.Domain.Common.Abstract;
 using UserService.Domain.UserProfileAggregate.ValueObjects;
@@ -54,10 +55,12 @@ public sealed class Club : AggregateRoot<ClubId>
         DateTime? updatedAt)
 
     {
-        return new Club(
+        var club = new Club(
             ClubId.CreateUnique(),
             name, description, interests, owner, isPublic, createdAt, updatedAt
         );
+        club.AddDomainEvent(new ClubCreated(club.Id, club.CreatedAt));
+        return club;
     }
 
     public static Club Update(
@@ -76,6 +79,7 @@ public sealed class Club : AggregateRoot<ClubId>
         club.SetOwner(owner);
         club.SetIsPublic(isPublic);
         club.UpdatedAt = updatedAt;
+
         return club;
     }
 

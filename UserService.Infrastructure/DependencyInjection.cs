@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Persistence;
 using UserService.Application.Services;
@@ -28,6 +29,8 @@ public static class DependencyInjection
         services.AddScoped<IRepository<UserProfile, UserId>, GenericRepository<UserProfile, UserId>>();
         services.AddScoped<IClubService, ClubService>();
         services.AddScoped<IUserProfileService, UserProfileService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPublisher, IntegrationEventPublisher>();
         return services;
     }
 
@@ -38,7 +41,7 @@ public static class DependencyInjection
 
     private static IServiceCollection RegisterDbContext(this IServiceCollection services)
     {
-        services.AddDbContextFactory<UserServiceDbContext>((provider, options) =>
+        services.AddDbContextFactory<UserServiceDbContext>(options =>
         {
             var connectionString = "Host=localhost;Port=5432;Database=user_service;Username=postgres;Password=postgres";
             options.UseNpgsql(connectionString, cfg => cfg.EnableRetryOnFailure(2));
