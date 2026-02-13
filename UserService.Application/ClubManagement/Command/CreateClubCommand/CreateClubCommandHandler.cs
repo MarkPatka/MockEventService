@@ -14,10 +14,8 @@ public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Creat
 {
     private readonly IClubService _clubService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IIntegrationEventPublisher _publisher;
 
-    public CreateClubCommandHandler(IClubService clubService, IUnitOfWork unitOfWork,
-        IIntegrationEventPublisher publisher)
+    public CreateClubCommandHandler(IClubService clubService, IUnitOfWork unitOfWork)
     {
         _clubService = clubService;
         _unitOfWork = unitOfWork;

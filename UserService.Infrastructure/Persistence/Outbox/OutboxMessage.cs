@@ -4,7 +4,7 @@ namespace UserService.Infrastructure.Persistence.Outbox;
 
 public sealed class OutboxMessage
 {
-    private OutboxMessage() { } // EF
+    private OutboxMessage() { }
 
     public OutboxMessage(IIntegrationEvent integrationEvent, string payload, string type)
     {

@@ -59,7 +59,7 @@ public sealed class Club : AggregateRoot<ClubId>
             ClubId.CreateUnique(),
             name, description, interests, owner, isPublic, createdAt, updatedAt
         );
-        club.AddDomainEvent(new ClubCreated(club.Id, club.CreatedAt));
+        club.AddDomainEvent(new ClubCreatedDomainEvent(club.Id, club.CreatedAt));
         return club;
     }
 

@@ -1,10 +1,15 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using UserService.Application.IntegrationEvents;
+using UserService.Application.IntegrationEvents.Mappers;
 using UserService.Application.Persistence;
 using UserService.Domain.Common.Abstract;
 using UserService.Infrastructure.Persistence.Outbox;
@@ -186,20 +191,17 @@ public class UnitOfWork : IUnitOfWork
         // Clear domain events from entities BEFORE publishing
         // This prevents infinite loops if handlers modify entities
         domainEntities.ForEach(entity => entity.ClearDomainEvents());
-
-        //TODO надо пофиксить
-        // 3. Превращаем их в интеграционные события
+        
         var integrationEvents = domainEvents
             .Select(de => IntegrationEventMapper.Map(de))
             .Where(ie => ie != null)
             .Cast<IIntegrationEvent>()
             .ToList();
-
-        // 4. Добавляем в Outbox через DbContext
+        
         foreach (var ie in integrationEvents)
         {
             var payload = JsonSerializer.Serialize(ie);
-            var message = new OutboxMessage(ie, payload, ie.GetType().FullName!);
+            var message = new OutboxMessage(ie, payload, ie.GetType().Name!);
             await _context.OutboxMessages.AddAsync(message, cancellationToken);
         }
 
