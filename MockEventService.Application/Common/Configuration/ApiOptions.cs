@@ -1,8 +1,8 @@
 ﻿namespace MockEventService.Application.Common.Configuration;
 
-public class ApiSettings 
+public class ApiOptions 
 {
-    public const string SectionName = nameof(ApiSettings);
+    public const string SectionName = nameof(ApiOptions);
 
     public string[] CorsOrigins { get; set; } = [];
     public int Port { get; set; }

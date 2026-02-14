@@ -11,15 +11,12 @@ public class CreateEventCommandHandler
 {
     private readonly IEventService _eventService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ITimeProviderService _timeProvider;
 
     public CreateEventCommandHandler(
         IEventService eventService, 
-        ITimeProviderService timeProvider, 
         IUnitOfWork unitOfWork)
     {
         _eventService = eventService;
-        _timeProvider = timeProvider;
         _unitOfWork = unitOfWork;
     }
 
@@ -42,8 +39,8 @@ public class CreateEventCommandHandler
             request.EndDate,
             request.MaxParticipants,
             request.OrganizerId,
-            _timeProvider.UtcNow,
-            _timeProvider.UtcNow
+            TimeProvider.System.GetUtcNow().DateTime,
+            TimeProvider.System.GetUtcNow().DateTime
         );
 
         await _eventService.CreateEventAsync(newEvent, cancellationToken);

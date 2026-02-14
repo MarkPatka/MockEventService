@@ -1,8 +1,8 @@
 ﻿namespace MockEventService.Application.Common.Configuration;
 
-public class PgAdminSettings
+public class PgAdminOptions
 {
-    public const string SectionName = nameof(PgAdminSettings);
+    public const string SectionName = nameof(PgAdminOptions);
 
     public string DefaultEmail    { get; set; } = null!;
     public string DefaultPassword { get; set; } = null!;
