@@ -108,6 +108,27 @@ public sealed class Event : AggregateRoot<EventId>
         AddDomainEvent(new EventPublished(Id, DateTime.UtcNow));
     }
 
+    // ON PARTICIPANT REGISTERED
+    public Participant RegisterParticipant(UserId userId, string userName)
+    {
+        if (Status != EventStatus.Active)
+            throw new InvalidOperationException("Only active events accept registrations");
+        
+        if (_participants.Count >= MaxParticipants)
+            throw new InvalidOperationException("Event has reached maximum participants");
+
+        var participant = Participant
+            .Create(Id, userId, userName, DateTime.UtcNow);
+
+        _participants.Add(participant);
+        UpdatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new ParticipantRegistered(
+            Id, participant.Id, participant.RegisteredAt));
+
+        return participant;
+    }
+
     // ON EVENT CANCELLED
     public void Cancel()
     {
@@ -116,7 +137,7 @@ public sealed class Event : AggregateRoot<EventId>
 
         Status = EventStatus.Cancelled;
         UpdatedAt = DateTime.UtcNow;
-
+        
         AddDomainEvent(new EventCancelled(Id, DateTime.UtcNow));
     }
 
