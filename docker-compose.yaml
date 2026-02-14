@@ -1,4 +1,108 @@
 services:
+# Kafka broker running in KRaft mode (no Zookeeper needed)
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: mockevent_kafka
+    restart: unless-stopped
+    ports:
+      - "${KAFKA_PORT:-9092}:9092" # Port for external clients (our .NET app)
+      - "9093:9093"                # Port for internal Docker network communication
+    environment:
+      # === KRaft Configuration (replaces Zookeeper) ===
+      KAFKA_NODE_ID: 1                                  # Unique ID for this Kafka node
+      KAFKA_PROCESS_ROLES: 'broker,controller'          # KRaft mode enables Kafka to manage metadata without Zookeeper
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'    # Controller manages cluster metadata (like Zookeeper did)
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'     # How controllers communicate with each other
+      
+
+      # === Listeners Configuration ===
+      # Defines how clients connect to Kafka
+      # PLAINTEXT: External clients (your .NET app) on port 9092
+      # PLAINTEXT_INTERNAL: Other Docker containers on port 9094
+      # CONTROLLER: Internal KRaft communication on port 9093
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093'
+      
+      # Advertised addresses - how clients should connect
+      # localhost:9092 - Your .NET app connects here
+      # kafka:9094 - Other Docker services connect here
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:9094'
+      
+      # Map listener names to security protocols
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT'
+      
+      # Which listener controllers use to communicate
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT_INTERNAL'
+      
+
+      # === Storage Configuration ===
+      # Where Kafka stores data inside the container
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      
+      # Cluster ID for KRaft mode (must be unique per cluster)
+      # Generated with command: (docker run --rm confluentinc/cp-kafka:latest kafka-storage random-uuid)
+      CLUSTER_ID: '5xNtaU-RSWu9y788VsfWRw'
+      
+
+      # === Topic Auto-Creation ===
+      # Auto-create topics when first message arrives
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+      # Default number of partitions for auto-created topics
+      # More partitions = better parallelism but more overhead
+      KAFKA_NUM_PARTITIONS: 3
+      
+      # === Replication Configuration ===
+      # Number of copies of each message (1 = no replication)
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      
+      # === Performance Tuning ===
+      # How long Kafka waits before flushing messages to disk
+      # Higher = better performance, lower = more durability(less data lost on crash)
+      # When Kafka receives a message:
+      # First: Stores in RAM (OS page cache) - FAST 
+      # Then: Writes to disk (physical storage) - SLOW 
+      # 
+      # Flushing = forcing data from RAM to disk
+      KAFKA_LOG_FLUSH_INTERVAL_MESSAGES: 10000 # Flush after N messages accumulated
+      KAFKA_LOG_FLUSH_INTERVAL_MS: 1000        # Flush after N milliseconds passed
+      
+      # === Retention Policy ===
+      # How long to keep messages (168 hours = 7 days)
+      KAFKA_LOG_RETENTION_HOURS: 168
+      # Maximum size of log segment files (1GB)
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      # How often to check if old segments can be deleted (5 minutes)
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+      
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - mockevent_network
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka UI - Web interface
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: mockevent_kafka_ui
+    restart: unless-stopped
+    ports:
+      - "${KAFKA_UI_PORT:-8080}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: 'mockevent-kafka'
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka:9094'
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - mockevent_network
+
+
   postgres:
     image: postgres:latest  
     container_name: mockevent_postgres
@@ -72,4 +176,6 @@ volumes:
   postgres_data:
     driver: local
   pgadmin_data:
+    driver: local
+  kafka_data:
     driver: local

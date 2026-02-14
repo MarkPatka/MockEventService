@@ -36,12 +36,6 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services
-            .AddSingleton<ITimeProviderService, TimeProviderService>();
-        
-        services
-            .AddTransient<IMockConfigurationService, MockConfigurationService>();
-
-        services
             .AddScoped<IEventService, EventService>();
 
         return services;
