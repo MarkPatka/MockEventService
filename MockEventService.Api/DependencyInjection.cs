@@ -58,23 +58,26 @@ public static class DependencyInjection
 
     private static IServiceCollection BindConfigurations(this IServiceCollection services, ConfigurationManager configuration)
     {
-        // bind appsettings
-        services.Configure<ApiSettings>(
-            configuration.GetSection(ApiSettings.SectionName));
+        services.AddOptions<KafkaOptions>()
+            .Bind(configuration.GetSection(KafkaOptions.SectionName));
+        
+        // bind api settings
+        services.Configure<ApiOptions>(
+            configuration.GetSection(ApiOptions.SectionName));
 
-        services.Configure<PgAdminSettings>(
-            configuration.GetSection(PgAdminSettings.SectionName));
+        services.Configure<PgAdminOptions>(
+            configuration.GetSection(PgAdminOptions.SectionName));
 
         // bind .env
-        services.Configure<EventsDatabaseConnection>(
+        services.Configure<EventsDatabaseOptions>(
             options => configuration.Bind(options));
 
         // validate settings
-        services.AddOptions<ApiSettings>()
+        services.AddOptions<ApiOptions>()
             .Validate(x => x.Port > 0, "API Port must be greater than 0")
             .ValidateOnStart();
 
-        services.AddOptions<EventsDatabaseConnection>()
+        services.AddOptions<EventsDatabaseOptions>()
             .Validate(x => !string.IsNullOrEmpty(x.CONNECTION_STRING), "Connection string is required")
             .ValidateOnStart();
 
