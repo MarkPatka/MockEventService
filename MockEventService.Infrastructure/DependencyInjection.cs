@@ -14,6 +14,7 @@ using MockEventService.Infrastructure.EventSourcing.EventHandlers;
 using MockEventService.Infrastructure.EventSourcing.Messaging;
 using MockEventService.Infrastructure.Persistence;
 using MockEventService.Infrastructure.Services;
+using System.Runtime;
 
 namespace MockEventService.Infrastructure;
 
@@ -44,8 +45,13 @@ public static class DependencyInjection
 
     private static IServiceCollection AddEventSourcing(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IEventConsumer, EventConsumer>();
+
+        services.AddHostedService<KafkaEventConsumerService>();
+
         services.AddSingleton<IEventProducer, KafkaEventProducer>();
-        services.AddSingleton<IEventConsumer, KafkaEventConsumer>();
+
+        services.AddSingleton<IDeadLetterQueueProducer, DeadLetterQueueProducer>();
 
         // Register domain event handlers 
         services.AddScoped<INotificationHandler<EventCreated>, EventCreatedDomainEventHandler>();
@@ -67,6 +73,8 @@ public static class DependencyInjection
 
     private static IServiceCollection RegisterDbContext(this IServiceCollection services)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         services.AddDbContext<MockEventServiceDbContext>((provider, options) =>
         {
             var dbSettings = provider
@@ -74,7 +82,6 @@ public static class DependencyInjection
 
             options.UseNpgsql(dbSettings.CONNECTION_STRING, cfg => cfg.EnableRetryOnFailure(2));
         }, ServiceLifetime.Scoped);
-
 
         services.AddDbContextFactory<MockEventServiceDbContext>((provider, options) =>
         {
@@ -84,6 +91,8 @@ public static class DependencyInjection
             options.UseNpgsql(dbSettings.CONNECTION_STRING, cfg => cfg.EnableRetryOnFailure(2));
 
         }, ServiceLifetime.Scoped);
+
+
 
         return services;
     }

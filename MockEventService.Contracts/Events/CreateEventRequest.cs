@@ -4,16 +4,13 @@ namespace MockEventService.Contracts.Events;
 
 public sealed record CreateEventRequest(
     string Title,
-    Guid eventTypeId, 
-    string eventTypeName,
-    string? eventTypeIcon,
-    string? eventTypeDescription, 
+    Guid EventTypeId, 
     DateTime StartDate,
     DateTime EndDate,
     int MaxParticipants,
     Guid OrganizerId,
     string? Description,
-    LocationFullDto location);
+    LocationFullDto Location);
 
 
 

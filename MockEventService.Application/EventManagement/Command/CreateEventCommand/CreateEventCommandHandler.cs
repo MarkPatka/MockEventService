@@ -3,6 +3,8 @@ using MockEventService.Application.EventManagement.Common;
 using MockEventService.Application.Persistence;
 using MockEventService.Application.Services;
 using MockEventService.Domain.EventAggregate;
+using MockEventService.Domain.EventAggregate.Entities;
+using MockEventService.Domain.EventAggregate.ValueObjects;
 
 namespace MockEventService.Application.EventManagement.Command.CreateEventCommand;
 
@@ -24,21 +26,27 @@ public class CreateEventCommandHandler
         CreateEventCommand request,
         CancellationToken cancellationToken)
     {      
-        var eventExists = await _eventService
-            .CheckEventNotExists(request.Title, request.OrganizerId, cancellationToken); /// NEW 
+        var eventNotExists = await _eventService
+            .CheckEventNotExists(request.Title, UserId.Create(request.OrganizerId), cancellationToken); /// NEW 
 
-        if (eventExists)
+        if (eventNotExists)
             throw new Exception($"Event already exists");
+
+        // var eventType = await _eventService.GetEventTypeAsync(request.EventTypeId);
 
         var newEvent = Event.Create(
             request.Title,
             request.Description!,
-            request.EventType,
+            eventType: EventType.CreateNew(
+                    Guid.NewGuid(), 
+                    "DotNext", 
+                    "Conference", 
+                    "Persisted_Icon_In_MiniO_Storage"),
             request.Location!,
             request.StartDate,
             request.EndDate,
             request.MaxParticipants,
-            request.OrganizerId,
+            UserId.Create(request.OrganizerId),
             TimeProvider.System.GetUtcNow().DateTime,
             TimeProvider.System.GetUtcNow().DateTime
         );

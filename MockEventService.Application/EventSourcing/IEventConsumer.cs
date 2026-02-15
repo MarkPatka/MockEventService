@@ -7,8 +7,12 @@ namespace MockEventService.Application.EventSourcing;
 /// </summary>
 public interface IEventConsumer : IDisposable
 {
+    public void Initialize();
+
     /// <summary>
     /// Start consuming messages. Typically runs until cancellation is requested.
     /// </summary>
-    Task ConsumeMessagesAsync(CancellationToken stoppingToken);
+    public Task ConsumeMessagesAsync(CancellationToken stoppingToken);
+
+    public void Close();
 }

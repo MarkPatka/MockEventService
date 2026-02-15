@@ -7,6 +7,9 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Install debugger for remote debugging
+RUN apt-get update && apt-get install -y curl
+RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build

@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.Options;
 using MockEventService.Api.Middleware.GlobalErrorHandler;
 using MockEventService.Application.Common.Configuration;
 using Serilog;
@@ -48,10 +49,12 @@ public static class DependencyInjection
 
         configuration
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables()
             .AddUserSecrets<Program>();
 
         services.BindConfigurations(configuration);
+
 
         return services;
     }

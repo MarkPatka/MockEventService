@@ -8,6 +8,6 @@ public class EventsDatabaseOptions
     public string POSTGRES_USER     { get; set; } = null!;
     public string POSTGRES_PASSWORD { get; set; } = null!;
     public string CONNECTION_STRING { get; set; } = null!;
- 
+
     public int POSTGRES_PORT { get; set; }
 }

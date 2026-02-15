@@ -1,29 +1,28 @@
 ﻿using Confluent.Kafka;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MockEventService.Application.Common.Configuration;
 using MockEventService.Application.EventSourcing;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace MockEventService.Infrastructure.EventSourcing.Messaging;
 
-public class KafkaEventConsumer : BackgroundService, IEventConsumer
+public class EventConsumer : IEventConsumer
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<KafkaEventConsumer> _logger;
+    private readonly ILogger<EventConsumer> _logger;
     private readonly IDeadLetterQueueProducer _dlqProducer;
     private readonly KafkaOptions _options;
 
     private IConsumer<string, string>? _consumer;
+    private bool _disposed;
 
-    public KafkaEventConsumer(
+    public EventConsumer(
         IServiceScopeFactory scopeFactory,
         IOptions<KafkaOptions> options,
-        ILogger<KafkaEventConsumer> logger,
+        ILogger<EventConsumer> logger,
         IDeadLetterQueueProducer dlqProducer)
     {
         _scopeFactory = scopeFactory;
@@ -32,31 +31,25 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
         _dlqProducer = dlqProducer;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public void Initialize()
     {
-        await Task.Yield();
+        ThrowIfDisposed();
 
         _consumer = BuildConsumer();
         _consumer.Subscribe(_options.ConsumeEventsTopics);
 
         _logger.LogInformation(
-            "Kafka consumer started. Group: {group}, Topics: [{topics}]",
+            "Kafka consumer initialized. Group: {group}, Topics: [{topics}]",
             _options.ConsumerGroupId, string.Join(", ", _options.ConsumeEventsTopics));
-
-        try
-        {
-            await ConsumeMessagesAsync(stoppingToken);
-        }
-        finally
-        {
-            _consumer?.Close();
-            _consumer?.Dispose();
-            _logger.LogInformation("Kafka consumer stopped.");
-        }
     }
 
     public async Task ConsumeMessagesAsync(CancellationToken stoppingToken)
     {
+        ThrowIfDisposed();
+
+        if (_consumer == null)
+            throw new InvalidOperationException("Consumer not initialized. Call Initialize() first.");
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -93,7 +86,7 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
             catch (ConsumeException ex)
             {
                 _logger.LogError(ex, "Kafka consume error: {Reason}", ex.Error.Reason);
-                await Task.Delay(1000, stoppingToken); 
+                await Task.Delay(1000, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
@@ -107,8 +100,7 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
             }
         }
     }
-    
-    
+
     private IConsumer<string, string> BuildConsumer()
     {
         var config = new ConsumerConfig
@@ -119,7 +111,6 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
             SessionTimeoutMs = 10000,
             HeartbeatIntervalMs = 3000,
             MaxPollIntervalMs = 300000,
-
             AutoOffsetReset = Enum.Parse<AutoOffsetReset>(
                 _options.AutoOffsetReset, true),
         };
@@ -133,7 +124,6 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
                 _logger.LogDebug("Revoked partitions: {Partitions}", string.Join(", ", partitions)))
             .Build();
     }
-
 
     private async Task<bool> TryProcessMessageWithRetryAsync(
         ConsumeResult<string, string> consumeResult,
@@ -226,37 +216,40 @@ public class KafkaEventConsumer : BackgroundService, IEventConsumer
     {
         throw new NotImplementedException("Implement mapping from envelope to command");
     }
-
-    public override async Task StopAsync(CancellationToken cancellationToken)
+    
+    private void ThrowIfDisposed()
     {
-        _logger.LogInformation("Kafka consumer stopping...");
-        await base.StopAsync(cancellationToken);
+        if (!_disposed) return;
+        throw new ObjectDisposedException(nameof(EventConsumer));
     }
+    public void Close()
+    {
+        _consumer?.Close();
+        _consumer?.Dispose();
+        _logger.LogInformation("Kafka consumer stopped.");
+    }
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _logger.LogInformation("Disposing KafkaEventConsumer...");
 
-}
+        Close();
 
-    // пример
-    public class KafkaEventEnvelope
-{
-    [JsonPropertyName("EventId")]
-    public string EventId { get; set; }
+        if (_consumer != null)
+        {
+            try
+            {
+                _consumer.Dispose();
+                _consumer = null;
+                _logger.LogDebug("Kafka consumer disposed.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while disposing Kafka consumer");
+            }
+        }
 
-    [JsonPropertyName("EventType")]
-    public string EventType { get; set; }
-
-    [JsonPropertyName("EventName")]
-    public string EventName { get; set; }
-
-    [JsonPropertyName("Timestamp")]
-    public string Timestamp { get; set; }
-
-    /// <summary>
-    /// Это может быть Event, User, Club ... 
-    /// Payload - это также то, что будет передано в качестве параметров command или query.
-    /// Для обработки пришедшего эвента нам потребуется соответствующая команда или запрос. Как их получить?
-    /// Для этого мы можем воспользоваться полем EventType, после чего при парсинге данного сообщения вызывать
-    /// некий класс-маппер, который будет по названию евента возвращать определенный command/query
-    /// </summary>
-    [JsonPropertyName("Payload")]
-    public JsonElement? Payload { get; set; }
+        _disposed = true;
+        GC.SuppressFinalize(this);
+    }
 }

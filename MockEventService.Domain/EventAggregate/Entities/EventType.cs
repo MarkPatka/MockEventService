@@ -12,7 +12,7 @@ public sealed class EventType : Entity<EventTypeId>
     private EventType(Guid id,
         string name,
         string? description,
-        string icon)
+        string? icon)
         : base(EventTypeId.Create(id))
     {
         Name = name;
@@ -23,7 +23,7 @@ public sealed class EventType : Entity<EventTypeId>
     private EventType(
         string name,
         string? description,
-        string icon)
+        string? icon)
         : base(EventTypeId.CreateUnique())
     {
         Name = name;
@@ -32,11 +32,11 @@ public sealed class EventType : Entity<EventTypeId>
     }
 
     public static EventType CreateNew(
-        Guid id, string name, string? description, string icon) 
+        Guid id, string name, string? description, string? icon) 
             => new(id, name, description, icon);
 
     public static EventType Create(
-        string name, string? description, string icon) 
+        string name, string? description, string? icon) 
             => new(name, description, icon);
 
 }

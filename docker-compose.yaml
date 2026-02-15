@@ -130,7 +130,7 @@ services:
       dockerfile: MockEventService.Api/Dockerfile
     container_name: mockevent_api
     restart: unless-stopped
-    environment:
+    environment:   
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
