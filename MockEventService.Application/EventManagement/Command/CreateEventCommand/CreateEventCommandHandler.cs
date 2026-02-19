@@ -26,10 +26,10 @@ public class CreateEventCommandHandler
         CreateEventCommand request,
         CancellationToken cancellationToken)
     {      
-        var eventNotExists = await _eventService
+        var eventExists = await _eventService
             .CheckEventNotExists(request.Title, UserId.Create(request.OrganizerId), cancellationToken); /// NEW 
 
-        if (eventNotExists)
+        if (eventExists)
             throw new Exception($"Event already exists");
 
         // var eventType = await _eventService.GetEventTypeAsync(request.EventTypeId);
@@ -52,6 +52,7 @@ public class CreateEventCommandHandler
         );
 
         await _eventService.CreateEventAsync(newEvent, cancellationToken);
+
         await _unitOfWork.SaveEntitiesAsync(cancellationToken);
 
         return new CreateEventResult(

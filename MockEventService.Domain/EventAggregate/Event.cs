@@ -12,14 +12,14 @@ public sealed class Event : AggregateRoot<EventId>
     private readonly List<Participant> _participants = [];
     public IReadOnlyCollection<Participant> Participants => _participants.AsReadOnly();
 
-    public string Title             { get; private set; } = string.Empty;
-    public string Description       { get; private set; } = string.Empty;
-    public EventType EventType      { get; private set; } = null!;
-    public Location Location        { get; private set; } = null!;
-    public DateTime StartDate       { get; private set; }
-    public DateTime EndDate         { get; private set; }
-    public int MaxParticipants      { get; private set; }
-    public EventStatus Status       { get; private set; } = EventStatus.Draft;
+    public string Title        { get; private set; } = string.Empty;
+    public string Description  { get; private set; } = string.Empty;
+    public EventType EventType { get; private set; } = null!;
+    public Location Location   { get; private set; } = null!;
+    public DateTime StartDate  { get; private set; }
+    public DateTime EndDate    { get; private set; }
+    public int MaxParticipants { get; private set; }
+    public EventStatus Status  { get; private set; } = EventStatus.Draft;
     
     public UserId OrganizerId   { get; private set; } = null!;
     public string OrganizerName { get; private set; } = string.Empty;

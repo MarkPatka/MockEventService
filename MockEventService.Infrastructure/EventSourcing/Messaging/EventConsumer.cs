@@ -215,6 +215,8 @@ public class EventConsumer : IEventConsumer
     private IRequest MapToCommand(KafkaEventEnvelope envelope)
     {
         throw new NotImplementedException("Implement mapping from envelope to command");
+        // eventType ?
+        // -> out Command/Query object to pass in mediator
     }
     
     private void ThrowIfDisposed()

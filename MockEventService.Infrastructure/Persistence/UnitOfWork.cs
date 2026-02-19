@@ -38,11 +38,19 @@ public class UnitOfWork : IUnitOfWork
     {
         try
         {
+            // transaction
+            // Save changes to database
+            var result = await _context.SaveChangesAsync(cancellationToken);
+
+            // table for events
+            // -> transactional outbox message
+
+            // -> commit transaction
+
             // Dispatch domain events before saving for transactional consistency
             await DispatchDomainEventsAsync(cancellationToken);
 
-            // Save changes to database
-            var result = await _context.SaveChangesAsync(cancellationToken);
+
 
             _logger.LogDebug("Saved {Count} entities to database", result);
 

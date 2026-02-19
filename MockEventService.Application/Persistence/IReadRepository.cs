@@ -1,6 +1,4 @@
-﻿using MockEventService.Domain.EventAggregate;
-
-namespace MockEventService.Application.Persistence;
+﻿namespace MockEventService.Application.Persistence;
 
 // Contravariance / Cvariance ???
 // "in" - type parameter is only used as INPUT (method parameters), never as output (return types)

@@ -12,6 +12,5 @@ public class KafkaOptions
     public string DeadLetterTopic       { get; set; } = "event-service-events-dlq";
     public int MaxRetryAttempts         { get; set; } = 3;
     public int RetryDelayMs             { get; set; } = 1000;
-
 }
 

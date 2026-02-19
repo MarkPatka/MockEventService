@@ -72,6 +72,9 @@ public class EventConfigurations : IEntityTypeConfiguration<Event>
             pb.HasIndex(p => p.Status)
                 .HasDatabaseName("IX_Participants_Status");
         });
+        
+        builder.Navigation(d => d.Participants)
+            .Metadata.SetField("_participants");
 
         builder.Metadata
             .FindNavigation(nameof(Event.Participants))!

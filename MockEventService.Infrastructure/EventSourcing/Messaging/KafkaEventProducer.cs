@@ -36,7 +36,6 @@ public class KafkaEventProducer : IEventProducer
             Acks = Acks.All,
             EnableIdempotence = true,
             MessageTimeoutMs = 5000,
-
         };
 
         _producer = new ProducerBuilder<string, string>(config)
